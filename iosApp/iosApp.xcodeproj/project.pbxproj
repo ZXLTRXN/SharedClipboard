@@ -6,6 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		EF3D5F5E2F5BF68600619197 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = EF3D5F5D2F5BF68600619197 /* FirebaseAuth */; };
+		EF3D5F602F5BF68600619197 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = EF3D5F5F2F5BF68600619197 /* FirebaseDatabase */; };
+		EF3D5F652F5BFC9F00619197 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = EF3D5F642F5BFC9F00619197 /* FirebaseCore */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		19650D65D325A8BC48A6A610 /* SharedClipboard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SharedClipboard.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -21,17 +27,17 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		4312DBFAB24BB9D1C72B63C0 /* Configuration */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Configuration;
+			sourceTree = "<group>";
+		};
 		DF0DB574B0536182D2510FC9 /* iosApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				DDD5EED27607C88E6E53F78B /* Exceptions for "iosApp" folder in "iosApp" target */,
 			);
 			path = iosApp;
-			sourceTree = "<group>";
-		};
-		4312DBFAB24BB9D1C72B63C0 /* Configuration */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Configuration;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -41,6 +47,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EF3D5F602F5BF68600619197 /* FirebaseDatabase in Frameworks */,
+				EF3D5F652F5BFC9F00619197 /* FirebaseCore in Frameworks */,
+				EF3D5F5E2F5BF68600619197 /* FirebaseAuth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -52,6 +61,7 @@
 			children = (
 				4312DBFAB24BB9D1C72B63C0 /* Configuration */,
 				DF0DB574B0536182D2510FC9 /* iosApp */,
+				EF3D5F632F5BFC9F00619197 /* Frameworks */,
 				77090F38380FD562AECA5C4D /* Products */,
 			);
 			sourceTree = "<group>";
@@ -62,6 +72,13 @@
 				19650D65D325A8BC48A6A610 /* SharedClipboard.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		EF3D5F632F5BFC9F00619197 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -85,6 +102,9 @@
 			);
 			name = iosApp;
 			packageProductDependencies = (
+				EF3D5F5D2F5BF68600619197 /* FirebaseAuth */,
+				EF3D5F5F2F5BF68600619197 /* FirebaseDatabase */,
+				EF3D5F642F5BFC9F00619197 /* FirebaseCore */,
 			);
 			productName = iosApp;
 			productReference = 19650D65D325A8BC48A6A610 /* SharedClipboard.app */;
@@ -114,6 +134,9 @@
 			);
 			mainGroup = 16108F2987E729511160D940;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				EF3D5F5C2F5BF68600619197 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 77090F38380FD562AECA5C4D /* Products */;
 			projectDirPath = "";
@@ -290,34 +313,6 @@
 			};
 			name = Release;
 		};
-		ECFD53F002955CFFD90EBBCC /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = arm64;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
-				DEVELOPMENT_TEAM = "${TEAM_ID}";
-				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = iosApp/Info.plist;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
 		7AE145BE0E69A10B53510822 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -346,6 +341,34 @@
 			};
 			name = Release;
 		};
+		ECFD53F002955CFFD90EBBCC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
+				DEVELOPMENT_TEAM = "${TEAM_ID}";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = iosApp/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -368,6 +391,35 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		EF3D5F5C2F5BF68600619197 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.10.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		EF3D5F5D2F5BF68600619197 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EF3D5F5C2F5BF68600619197 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		EF3D5F5F2F5BF68600619197 /* FirebaseDatabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EF3D5F5C2F5BF68600619197 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabase;
+		};
+		EF3D5F642F5BFC9F00619197 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EF3D5F5C2F5BF68600619197 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 1916DE89D62359DCB8143F32 /* Project object */;
 }

@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "620904450586",
+    "firebase_url": "https://shared-clipboard-bc736-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "shared-clipboard-bc736",
+    "storage_bucket": "shared-clipboard-bc736.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:620904450586:android:00f1f23c02b2a694615fa3",
+        "android_client_info": {
+          "package_name": "com.example.sharedclipboard"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1W9gEM8KsXUVz0kVJ8VlH2BX1xRSkLzM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
