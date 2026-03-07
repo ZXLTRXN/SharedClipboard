@@ -14,10 +14,12 @@ composeMultiplatform = "1.10.0"
 junit = "4.13.2"
 kotlin = "2.3.0"
 kotlinx-coroutines = "1.10.2"
+kotlinxSerializationJson = "1.10.0"
 material3 = "1.10.0-alpha05"
 gitlive-firebase = "2.4.0"
 google-firebase = "34.10.0"
 gmsVersion = "4.4.4"
+serializationVersion = "2.3.10"
 
 
 [libraries]
@@ -42,6 +44,7 @@ kotlinx-coroutinesSwing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-s
 gitlive-firebase-database = { module = "dev.gitlive:firebase-database", version.ref = "gitlive-firebase" }
 google-firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "google-firebase" }
 google-firebase-database = { module = "com.google.firebase:firebase-database" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -50,4 +53,5 @@ composeHotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "com
 composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "serializationVersion" }
 gms = { id = "com.google.gms.google-services", version.ref = "gmsVersion" }
