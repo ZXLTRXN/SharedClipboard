@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.composeHotReload)
     alias(libs.plugins.gms)
     alias(libs.plugins.kotlinSerialization)
+
 }
 
 kotlin {
@@ -41,7 +42,10 @@ kotlin {
 
             implementation(project.dependencies.platform(libs.google.firebase.bom))
             implementation(libs.google.firebase.database)
+
+            implementation(libs.koin.android)
         }
+
         commonMain.dependencies {
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
@@ -54,9 +58,15 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
 
             implementation(libs.gitlive.firebase.database)
+
+            implementation(project.dependencies.platform(libs.koin.bom))
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.koin.test)
         }
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)

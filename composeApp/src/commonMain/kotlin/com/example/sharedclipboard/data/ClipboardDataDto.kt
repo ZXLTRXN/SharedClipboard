@@ -1,4 +1,4 @@
-package com.example.sharedclipboard
+package com.example.sharedclipboard.data
 
 import kotlinx.serialization.Serializable
 

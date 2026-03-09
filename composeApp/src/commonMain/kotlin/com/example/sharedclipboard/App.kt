@@ -17,41 +17,28 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.sharedclipboard.clipboard_ui.ClipboardScreen
+import com.example.sharedclipboard.data.FirebaseRepository
 import kotlinx.coroutines.launch
 
 @Composable
 @Preview
 fun App() {
-    val repo = remember { FirebaseRepository() }
     var text by remember { mutableStateOf("") }
-    var input by remember { mutableStateOf("") }
+    var input by remember { mutableStateOf("") } // вынести в стейт fixme
 
     val scope = rememberCoroutineScope()
 
 
     MaterialTheme {
-        LaunchedEffect(repo) {
-            repo.observeMessages().collect {
-                text = it
-            }
-        }
+//        LaunchedEffect(repo) {
+//            repo.observeMessages().collect {
+//                text = it
+//            }
+//        }
         Scaffold { contentPadding ->
-            Column(
-                modifier = Modifier.fillMaxSize()
-                    .padding(contentPadding)
-            ) {
-                Text(text)
-                TextField(
-                    input,
-                    onValueChange = { input = it })
-                Button(onClick = {
-                    scope.launch() {
-                        repo.saveMessage(input)
-                    }
-                }) {
-                    Text("Send")
-                }
-            }
+            ClipboardScreen(modifier = Modifier.padding(contentPadding))
         }
     }
 }
+
