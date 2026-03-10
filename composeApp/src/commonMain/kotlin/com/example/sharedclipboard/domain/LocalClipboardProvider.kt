@@ -1,4 +1,4 @@
-package com.example.sharedclipboard.data
+package com.example.sharedclipboard.domain
 
 import kotlinx.coroutines.flow.Flow
 

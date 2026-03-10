@@ -1,5 +1,6 @@
 package com.example.sharedclipboard.data
 
+import com.example.sharedclipboard.domain.LocalClipboardProvider
 import java.awt.Toolkit
 import java.awt.datatransfer.DataFlavor
 import kotlinx.coroutines.delay

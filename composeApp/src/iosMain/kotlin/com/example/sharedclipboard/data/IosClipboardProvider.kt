@@ -1,5 +1,6 @@
 package com.example.sharedclipboard.data
 
+import com.example.sharedclipboard.domain.LocalClipboardProvider
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow

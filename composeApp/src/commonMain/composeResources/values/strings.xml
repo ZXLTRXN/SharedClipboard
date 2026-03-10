@@ -1,0 +1,7 @@
+<resources>
+    <string name="localClipboard">Local value</string>
+    <string name="send">Send</string>
+    <string name="emptyBuffer">Remote buffer is empty</string>
+    <string name="copied">Copied</string>
+    <string name="failedOpenURL">Failed to open as URL</string>
+</resources>

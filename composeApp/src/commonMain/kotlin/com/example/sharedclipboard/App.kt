@@ -1,43 +1,32 @@
 package com.example.sharedclipboard
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.sharedclipboard.clipboard_ui.ClipboardScreen
-import com.example.sharedclipboard.data.FirebaseRepository
-import kotlinx.coroutines.launch
+import com.example.sharedclipboard.common_ui.LocalSnackbarHostState
 
 @Composable
 @Preview
 fun App() {
-    var text by remember { mutableStateOf("") }
-    var input by remember { mutableStateOf("") } // вынести в стейт fixme
-
-    val scope = rememberCoroutineScope()
-
-
     MaterialTheme {
-//        LaunchedEffect(repo) {
-//            repo.observeMessages().collect {
-//                text = it
-//            }
-//        }
-        Scaffold { contentPadding ->
-            ClipboardScreen(modifier = Modifier.padding(contentPadding))
+        val snackbarHostState = remember { SnackbarHostState() }
+
+        CompositionLocalProvider(LocalSnackbarHostState provides snackbarHostState) {
+            Scaffold(
+                snackbarHost = { SnackbarHost(snackbarHostState) },
+                modifier = Modifier.imePadding()
+            ) { contentPadding ->
+                ClipboardScreen(modifier = Modifier.padding(contentPadding))
+            }
         }
     }
 }

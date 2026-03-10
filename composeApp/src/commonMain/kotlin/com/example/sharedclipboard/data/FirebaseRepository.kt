@@ -1,28 +1,25 @@
 package com.example.sharedclipboard.data
 
-import dev.gitlive.firebase.Firebase
-import dev.gitlive.firebase.database.database
+import com.example.sharedclipboard.domain.ClipboardRepository
+import com.example.sharedclipboard.getPlatform
+import dev.gitlive.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.withContext
 import kotlin.time.Clock
 
 class FirebaseRepository(
-//    private val database: FirebaseDatabase fixme
+    database: FirebaseDatabase,
     private val ioDispatcher: CoroutineDispatcher
 ) : ClipboardRepository {
-    private val database =
-        Firebase.database("https://shared-clipboard-bc736-default-rtdb.asia-southeast1" +
-                ".firebasedatabase.app/") // fixme
     private val clipboardsRef = database.reference("clipboards")
 
-    override suspend fun saveMessage(text: String) = withContext(ioDispatcher) { // fixme
+    override suspend fun saveMessage(text: String) = withContext(ioDispatcher) {
         val newMessage = ClipboardDataDto(
             text = text,
             timestamp = Clock.System.now().toEpochMilliseconds(),
-            senderId = "" // fixme
+            senderId = getPlatform().name
         )
 
         clipboardsRef.setValue(newMessage)
