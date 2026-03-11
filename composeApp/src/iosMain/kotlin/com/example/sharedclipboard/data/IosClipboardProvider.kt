@@ -1,16 +1,20 @@
 package com.example.sharedclipboard.data
 
 import com.example.sharedclipboard.domain.LocalClipboardProvider
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOn
 import platform.Foundation.NSNotificationCenter
 import platform.Foundation.NSOperationQueue
 import platform.UIKit.UIApplicationDidBecomeActiveNotification
 import platform.UIKit.UIPasteboard
 
-class IosClipboardProvider: LocalClipboardProvider {
+class IosClipboardProvider(
+    ioDispatcher: CoroutineDispatcher
+): LocalClipboardProvider {
 
     override val currentClipboard: Flow<String> = callbackFlow {
         val pasteboard = UIPasteboard.generalPasteboard
@@ -34,5 +38,6 @@ class IosClipboardProvider: LocalClipboardProvider {
             NSNotificationCenter.defaultCenter.removeObserver(observer)
         }
     }.distinctUntilChanged()
+        .flowOn(ioDispatcher)
 }
 

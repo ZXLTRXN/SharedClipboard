@@ -3,13 +3,16 @@ package com.example.sharedclipboard.data
 import android.content.ClipboardManager
 import android.content.Context
 import com.example.sharedclipboard.domain.LocalClipboardProvider
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOn
 
 class AndroidClipboardProvider(
-    context: Context
+    context: Context,
+    ioDispatcher: CoroutineDispatcher
 ) : LocalClipboardProvider {
 
     private val clipboardManager =
@@ -30,6 +33,7 @@ class AndroidClipboardProvider(
             clipboardManager.removePrimaryClipChangedListener(listener)
         }
     }.distinctUntilChanged()
+        .flowOn(ioDispatcher)
 
     private fun getStringOrEmpty(): String {
         return try {

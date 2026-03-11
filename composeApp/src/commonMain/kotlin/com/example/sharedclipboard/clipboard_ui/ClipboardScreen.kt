@@ -2,6 +2,7 @@ package com.example.sharedclipboard.clipboard_ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,6 +13,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -27,12 +29,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.sharedclipboard.auth_ui.ErrorScreen
 import com.example.sharedclipboard.clipboard_ui.state.ClipboardIntent
 import com.example.sharedclipboard.clipboard_ui.state.ClipboardSideEffect
 import com.example.sharedclipboard.clipboard_ui.state.ClipboardState
 import com.example.sharedclipboard.common_ui.FlashTextWithDetection
-import com.example.sharedclipboard.common_ui.ReloadableTextField
 import com.example.sharedclipboard.common_ui.LocalSnackbarHostState
+import com.example.sharedclipboard.common_ui.ReloadableTextField
 import kotlinx.coroutines.flow.receiveAsFlow
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
@@ -41,11 +44,15 @@ import sharedclipboard.composeapp.generated.resources.Res
 import sharedclipboard.composeapp.generated.resources.emptyBuffer
 import sharedclipboard.composeapp.generated.resources.localClipboard
 import sharedclipboard.composeapp.generated.resources.send
+import sharedclipboard.composeapp.generated.resources.showJoinCode
+import sharedclipboard.composeapp.generated.resources.toAuth
 
 @Composable
-fun ClipboardScreen(
+fun ClipboardScreenStateful(
     modifier: Modifier = Modifier,
-    viewModel: ClipboardViewModel = koinViewModel()
+    viewModel: ClipboardViewModel = koinViewModel(),
+    onGoToAuth: () -> Unit,
+    onGoToJoinCode: () -> Unit
 ) {
 
     val snackbarHostState = LocalSnackbarHostState.current
@@ -58,20 +65,33 @@ fun ClipboardScreen(
                         message = getString(effect.message)
                     )
                 }
+
+                is ClipboardSideEffect.GoToAuth -> {
+                    onGoToAuth()
+                }
             }
         }
     }
 
     val state by viewModel.state.collectAsStateWithLifecycle()
-    ClipboardScreenStateless(
+    ClipboardScreen(
         modifier = modifier,
         state = state,
-        onIntent = viewModel::process
+        onIntent = { intent ->
+            when (intent) {
+                is ClipboardIntent.SendLocal,
+                ClipboardIntent.FailedToOpenUri,
+                ClipboardIntent.Copied -> viewModel.process(intent)
+
+                ClipboardIntent.goToAuth -> onGoToAuth.invoke()
+                ClipboardIntent.goToShowJoinCode -> onGoToJoinCode()
+            }
+        }
     )
 }
 
 @Composable
-fun ClipboardScreenStateless(
+fun ClipboardScreen(
     state: ClipboardState,
     onIntent: (ClipboardIntent) -> Unit,
     modifier: Modifier = Modifier,
@@ -79,18 +99,25 @@ fun ClipboardScreenStateless(
     when (state) {
         is ClipboardState.Loading -> {}
 
-        is ClipboardState.Success -> SuccessState(
+        is ClipboardState.Success -> ClipboardSuccessStateScreen(
             state = state,
             onIntent = onIntent,
             modifier = modifier
         )
 
-        ClipboardState.Error -> {}
+        ClipboardState.Error -> {
+            ErrorScreen(
+                modifier = modifier,
+                goAuth = {
+                    onIntent(ClipboardIntent.goToAuth)
+                }
+            )
+        }
     }
 }
 
 @Composable
-fun SuccessState(
+fun ClipboardSuccessStateScreen(
     state: ClipboardState.Success,
     onIntent: (ClipboardIntent) -> Unit,
     modifier: Modifier = Modifier,
@@ -103,6 +130,7 @@ fun SuccessState(
         modifier = modifier.fillMaxSize()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
         var reloadTrigger by remember { mutableStateOf(false) }
 
@@ -110,6 +138,28 @@ fun SuccessState(
             state.localValue,
             reloadTrigger
         ) { mutableStateOf(state.localValue) }
+
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            TextButton(onClick = {
+                onIntent(
+                    ClipboardIntent.goToAuth
+                )
+            }) {
+                Text(stringResource(Res.string.toAuth))
+            }
+
+            TextButton(onClick = {
+                onIntent(
+                    ClipboardIntent.goToShowJoinCode
+                )
+            }) {
+                Text(stringResource(Res.string.showJoinCode))
+            }
+        }
+
 
         Column(
             verticalArrangement = Arrangement.Center,
@@ -177,7 +227,7 @@ fun SuccessState(
 @Composable
 fun ClipboardScreenPreview() {
     MaterialTheme {
-        ClipboardScreenStateless(
+        ClipboardScreen(
             state = ClipboardState.Success(
                 localValue = "local",
                 remoteValue = "remote"

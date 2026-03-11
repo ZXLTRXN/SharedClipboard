@@ -1,6 +1,7 @@
 package com.example.sharedclipboard.data
 
 import com.example.sharedclipboard.domain.LocalClipboardProvider
+import kotlinx.coroutines.CoroutineDispatcher
 import java.awt.Toolkit
 import java.awt.datatransfer.DataFlavor
 import kotlinx.coroutines.delay
@@ -8,8 +9,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOn
 
-class JvmClipboardProvider : LocalClipboardProvider {
+class JvmClipboardProvider(
+    ioDispatcher: CoroutineDispatcher
+): LocalClipboardProvider {
 
     private val clipboard = Toolkit.getDefaultToolkit().systemClipboard
 
@@ -29,4 +33,5 @@ class JvmClipboardProvider : LocalClipboardProvider {
             delay(1_000)
         }
     }.distinctUntilChanged()
+        .flowOn(ioDispatcher)
 }

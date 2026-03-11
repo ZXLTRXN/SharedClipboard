@@ -17,19 +17,41 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.sharedclipboard.clipboard_ui.state.ClipboardSideEffect
+import kotlinx.coroutines.flow.receiveAsFlow
+import org.jetbrains.compose.resources.getString
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import sharedclipboard.composeapp.generated.resources.Res
+import sharedclipboard.composeapp.generated.resources.cancel
+import sharedclipboard.composeapp.generated.resources.connect
+import sharedclipboard.composeapp.generated.resources.createRoom
+import sharedclipboard.composeapp.generated.resources.errorRelogin
+import sharedclipboard.composeapp.generated.resources.joinRoom
 
 @Composable
-fun AuthScreen(
-    modifier: Modifier = Modifier,
+fun AuthScreenStateful(
     navigateToClipboardScreen: () -> Unit,
+    modifier: Modifier = Modifier,
     viewModel: AuthViewModel = koinViewModel()
 ) {
-    AuthScreenStateless(
+
+    LaunchedEffect(viewModel.sideEffect) {
+        viewModel.sideEffect.receiveAsFlow().collect { effect ->
+            when (effect) {
+                is AuthSideEffect.GoToMain -> {
+                    navigateToClipboardScreen()
+                }
+            }
+        }
+    }
+
+    AuthScreen(
         state = viewModel.state,
         onCreateRoom = viewModel::createRoom,
         onJoinExistingRoom = viewModel::joinExistingRoom,
@@ -41,7 +63,7 @@ fun AuthScreen(
 }
 
 @Composable
-fun AuthScreenStateless(
+fun AuthScreen(
     state: AuthState,
     onCreateRoom: () -> Unit,
     onJoinExistingRoom: () -> Unit,
@@ -54,35 +76,42 @@ fun AuthScreenStateless(
 
     when (state) {
         AuthState.Selector -> {
-            AuthSelector(
+            AuthSelectorScreen(
                 onCreateRoom = onCreateRoom,
                 onJoinExistingRoom = onJoinExistingRoom,
                 modifier = modifier
             )
         }
 
-        is AuthState.ShowJoiningCode -> {
-            AuthShowJoiningCode(
+        is AuthState.ShowJoinCode -> {
+            AuthJoinCodeScreen(
                 code = state.code,
-                onCancel = onCancel, // fixme для
+                onCancel = onCancel,
                 onGoToMain = onGoToMain,
                 modifier = modifier
             )
         }
 
         is AuthState.JoinExistingRoom -> {
-            AuthJoinExistingRoom(
+            AuthJoinExistingRoomScreen(
                 textFieldState = codeInputState,
                 onAccept = onJoinExistingRoomRequest,
                 onCancel = onCancel,
                 modifier = modifier
             )
         }
+
+        is AuthState.Error -> {
+            ErrorScreen(
+                modifier = modifier,
+                goAuth = onCancel
+            )
+        }
     }
 }
 
 @Composable
-fun AuthJoinExistingRoom(
+fun AuthJoinExistingRoomScreen(
     textFieldState: TextFieldState,
     onAccept: (String) -> Unit,
     onCancel: () -> Unit,
@@ -95,7 +124,7 @@ fun AuthJoinExistingRoom(
             onClick = onCancel,
             modifier = Modifier.align(Alignment.TopStart)
         ) {
-            Text("cancel")
+            Text(stringResource(Res.string.cancel))
         }
         TextField(
             state = textFieldState,
@@ -107,51 +136,13 @@ fun AuthJoinExistingRoom(
             },
             modifier = Modifier.align(Alignment.BottomCenter)
         ) {
-            Text("connect")
+            Text(stringResource(Res.string.connect))
         }
     }
 }
 
 @Composable
-fun AuthShowJoiningCode(
-    code: String,
-    modifier: Modifier = Modifier,
-    onCancel: (() -> Unit)? = null,
-    onGoToMain: (() -> Unit)? = null,
-
-    ) {
-    Box(
-        modifier.fillMaxSize().padding(16.dp),
-    ) {
-        onCancel?.let {
-            TextButton(
-                onClick = it,
-                modifier = Modifier.align(Alignment.TopStart)
-            ) {
-                Text("cancel")
-            }
-        }
-
-        onGoToMain?.let {
-            TextButton(
-                onClick = it,
-                modifier = Modifier.align(Alignment.TopEnd)
-            ) {
-                Text("clipboard")
-            }
-        }
-
-        Text(
-            code,
-            modifier = Modifier.align(Alignment.Center).fillMaxWidth(),
-            textAlign =
-                TextAlign.Center
-        )
-    }
-}
-
-@Composable
-fun AuthSelector(
+fun AuthSelectorScreen(
     onCreateRoom: () -> Unit,
     onJoinExistingRoom: () -> Unit,
     modifier: Modifier = Modifier
@@ -162,22 +153,23 @@ fun AuthSelector(
         verticalArrangement = Arrangement.Center
     ) {
         OutlinedButton(onClick = onCreateRoom) {
-            Text("create room")
+            Text(stringResource(Res.string.createRoom))
         }
         Spacer(
             Modifier.height(16.dp)
         )
         OutlinedButton(onClick = onJoinExistingRoom) {
-            Text("join room")
+            Text(stringResource(Res.string.joinRoom))
         }
     }
 }
 
 
 @Composable
+@Preview(showBackground = true)
 fun AuthScreenPreview() {
     MaterialTheme {
-        AuthScreenStateless(
+        AuthScreen(
             state = AuthState.Selector,
             onCreateRoom = {},
             onJoinExistingRoom = {},

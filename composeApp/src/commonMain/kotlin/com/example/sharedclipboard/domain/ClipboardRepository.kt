@@ -9,7 +9,7 @@ interface ClipboardRepository {
     suspend fun saveMessage(text: String)
 
     /**
-     * @throws IllegalStateException if no room saved
+     * @throws IllegalStateException in flow if no room saved
      */
     fun observeMessages(): Flow<String>
 }

@@ -8,11 +8,11 @@ import io.github.aakira.napier.Napier
 
 
 fun main() {
+    Napier.base(DebugAntilog())
     initFirebase()
     initKoin {
         printLogger()
     }
-    Napier.base(DebugAntilog())
 
     application {
         Window(

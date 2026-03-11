@@ -5,8 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.sharedclipboard.clipboard_ui.state.ClipboardSideEffect
 import com.example.sharedclipboard.domain.AuthRepository
+import io.github.aakira.napier.Napier
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.StringResource
 
 class AuthViewModel(
     private val repository: AuthRepository
@@ -15,16 +19,25 @@ class AuthViewModel(
     var state by mutableStateOf<AuthState>(AuthState.Selector)
         private set
 
+    var sideEffect = Channel<AuthSideEffect>(Channel.BUFFERED)
+        private set
+
     init {
         viewModelScope.launch {
-            repository.ensureAuth()
+            repository.ensureAuth() // fixme
         }
     }
 
     fun createRoom() {
         viewModelScope.launch {
             repository.createRoom()
-            state = AuthState.ShowJoiningCode(repository.generateInviteCode())
+            try {
+                val code = repository.generateInviteCode()
+                state = AuthState.ShowJoinCode(code)
+            } catch (ex: Exception) {
+                Napier.e("Cant generate code", ex, this::class.simpleName)
+                state = AuthState.Error(null)
+            }
         }
     }
 
@@ -34,7 +47,12 @@ class AuthViewModel(
 
     fun requestJoiningTheRoom(code: String) {
         viewModelScope.launch {
-            repository.joinRoom(code)
+            val isSuccess = repository.joinRoom(code)
+            if (!isSuccess) {
+                state = AuthState.Error(null)
+            } else {
+                sideEffect.trySend(AuthSideEffect.GoToMain)
+            }
         }
     }
 
@@ -46,6 +64,11 @@ class AuthViewModel(
 
 sealed interface AuthState {
     data object Selector : AuthState
-    data class ShowJoiningCode(val code: String) : AuthState
+    data class ShowJoinCode(val code: String) : AuthState
     data object JoinExistingRoom : AuthState
+    data class Error(val message: StringResource?) : AuthState
+}
+
+interface AuthSideEffect {
+    data object GoToMain : AuthSideEffect
 }

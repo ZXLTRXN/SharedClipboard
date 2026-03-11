@@ -1,5 +1,6 @@
 package com.example.sharedclipboard.di
 
+import com.example.sharedclipboard.auth_ui.AuthJoinCodeViewModel
 import com.example.sharedclipboard.auth_ui.AuthViewModel
 import com.example.sharedclipboard.clipboard_ui.ClipboardViewModel
 import com.example.sharedclipboard.data.FirebaseRepository
@@ -37,7 +38,6 @@ val sharedModule = module {
                     ".firebasedatabase.app/"
         )
     }
-
     single<FirebaseAuth> {
         Firebase.auth
     }
@@ -58,12 +58,16 @@ val sharedModule = module {
         ClipboardViewModel(
             get(),
             get(),
-            get(IoQualifier)
+            get()
         )
     }
-
     viewModel<AuthViewModel> {
         AuthViewModel(
+            get()
+        )
+    }
+    viewModel<AuthJoinCodeViewModel> {
+        AuthJoinCodeViewModel(
             get()
         )
     }

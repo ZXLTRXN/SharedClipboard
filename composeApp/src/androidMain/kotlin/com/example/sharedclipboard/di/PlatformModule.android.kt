@@ -5,5 +5,5 @@ import com.example.sharedclipboard.domain.LocalClipboardProvider
 import org.koin.dsl.module
 
 actual val platformModule = module {
-    single<LocalClipboardProvider> { AndroidClipboardProvider(get()) }
+    single<LocalClipboardProvider> { AndroidClipboardProvider(get(), get(IoQualifier)) }
 }

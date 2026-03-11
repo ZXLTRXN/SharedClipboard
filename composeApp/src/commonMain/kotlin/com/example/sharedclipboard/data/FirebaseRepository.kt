@@ -11,10 +11,14 @@ import dev.gitlive.firebase.database.FirebaseDatabase
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.withContext
 import kotlin.random.Random
+import kotlin.random.nextULong
 import kotlin.time.Clock
 
 class FirebaseRepository(
@@ -29,13 +33,18 @@ class FirebaseRepository(
 
     override suspend fun ensureAuth() {
         if (auth.currentUser == null) {
+            Napier.d { "Ensure auth" } // fixme
             auth.signInAnonymously()
         }
     }
 
-    override suspend fun createRoom() {
-        val newRoomId = Random.nextLong().toString()
+    override fun createRoom() {
+        val newRoomId = Random.nextULong().toString()
         settings.roomId = newRoomId
+    }
+
+    override fun quitFromRoom() {
+        settings.roomId = null
     }
 
     /**
@@ -52,7 +61,7 @@ class FirebaseRepository(
                 expiresAt = Clock.System.now().toEpochMilliseconds() + expiresInMsec
             )
 
-            invitesRef.child(code).setValue(invite)
+            invitesRef.child(code).setValue(invite) // fixme exception?
             return@withContext code
         }
 
@@ -103,13 +112,16 @@ class FirebaseRepository(
     }
 
     /**
-     * @throws IllegalStateException if no room saved
+     * @throws IllegalStateException in flow if no room saved
      */
     override fun observeMessages(): Flow<String> {
-        val roomId = settings.roomId ?: throw IllegalStateException("No saved roomId")
+        val roomId = settings.roomId ?: return flow {
+            throw IllegalStateException("No saved roomId")
+        }
 
+        Napier.d { "observeMessages" } // fixme
         return getLastClipSnapshot(roomId).valueEvents.mapNotNull { snapshot ->
             snapshot.value<ClipboardDataDto?>()?.text
-        }
+        }.flowOn(ioDispatcher)
     }
 }

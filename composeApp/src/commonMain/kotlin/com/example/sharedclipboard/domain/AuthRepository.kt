@@ -4,7 +4,10 @@ interface AuthRepository {
 
     suspend fun ensureAuth()
 
-    suspend fun createRoom()
+    fun createRoom()
+
+    fun quitFromRoom()
+
 
     /**
      * @throws IllegalStateException if no room attached
