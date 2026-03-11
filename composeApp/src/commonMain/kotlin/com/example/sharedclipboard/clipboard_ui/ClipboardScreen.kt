@@ -27,9 +27,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.sharedclipboard.clipboard_ui.model.ClipboardIntent
-import com.example.sharedclipboard.clipboard_ui.model.ClipboardSideEffect
-import com.example.sharedclipboard.clipboard_ui.model.ClipboardState
+import com.example.sharedclipboard.clipboard_ui.state.ClipboardIntent
+import com.example.sharedclipboard.clipboard_ui.state.ClipboardSideEffect
+import com.example.sharedclipboard.clipboard_ui.state.ClipboardState
 import com.example.sharedclipboard.common_ui.FlashTextWithDetection
 import com.example.sharedclipboard.common_ui.ReloadableTextField
 import com.example.sharedclipboard.common_ui.LocalSnackbarHostState
@@ -175,7 +175,7 @@ fun SuccessState(
 
 @Preview(showBackground = true)
 @Composable
-fun ClipboardStatePreview() {
+fun ClipboardScreenPreview() {
     MaterialTheme {
         ClipboardScreenStateless(
             state = ClipboardState.Success(

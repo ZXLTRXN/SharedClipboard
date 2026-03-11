@@ -1,4 +1,4 @@
-package com.example.sharedclipboard.clipboard_ui.model
+package com.example.sharedclipboard.clipboard_ui.state
 
 import org.jetbrains.compose.resources.StringResource
 

@@ -19,6 +19,8 @@ material3 = "1.10.0-alpha05"
 gitlive-firebase = "2.4.0"
 google-firebase = "34.10.0"
 gmsVersion = "4.4.4"
+multiplatformSettingsNoArg = "1.3.0"
+napier = "2.7.1"
 serializationVersion = "2.3.10"
 koinVersion = "4.1.1"
 
@@ -53,10 +55,16 @@ koin-ktor = { module = "io.insert-koin:koin-ktor" }
 koin-test = { module = "io.insert-koin:koin-test" }
 
 gitlive-firebase-database = { module = "dev.gitlive:firebase-database", version.ref = "gitlive-firebase" }
+gitlive-firebase-auth = { module = "dev.gitlive:firebase-auth", version.ref = "gitlive-firebase" }
+
 google-firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "google-firebase" }
 google-firebase-database = { module = "com.google.firebase:firebase-database" }
+google-firebase-auth = { module = "com.google.firebase:firebase-auth" }
 
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+
+multiplatform-settings-no-arg = { module = "com.russhwolf:multiplatform-settings-no-arg", version.ref = "multiplatformSettingsNoArg" }
+napier = { module = "io.github.aakira:napier", version.ref = "napier" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

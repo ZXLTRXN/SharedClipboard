@@ -42,6 +42,7 @@ kotlin {
 
             implementation(project.dependencies.platform(libs.google.firebase.bom))
             implementation(libs.google.firebase.database)
+            implementation(libs.google.firebase.auth)
 
             implementation(libs.koin.android)
         }
@@ -58,11 +59,15 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
 
             implementation(libs.gitlive.firebase.database)
+            implementation(libs.gitlive.firebase.auth)
 
             implementation(project.dependencies.platform(libs.koin.bom))
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
+
+            implementation(libs.multiplatform.settings.no.arg)
+            implementation(libs.napier)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

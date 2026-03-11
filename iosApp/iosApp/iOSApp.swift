@@ -6,6 +6,7 @@ struct iOSApp: App {
 
     init() {
         KoinInitIosKt.doInitKoinIos()
+        NapierInitIosKt.setupNapier()
     }
 
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate

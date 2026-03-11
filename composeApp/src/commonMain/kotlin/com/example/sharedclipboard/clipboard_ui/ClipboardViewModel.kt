@@ -2,9 +2,9 @@ package com.example.sharedclipboard.clipboard_ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.sharedclipboard.clipboard_ui.model.ClipboardIntent
-import com.example.sharedclipboard.clipboard_ui.model.ClipboardSideEffect
-import com.example.sharedclipboard.clipboard_ui.model.ClipboardState
+import com.example.sharedclipboard.clipboard_ui.state.ClipboardIntent
+import com.example.sharedclipboard.clipboard_ui.state.ClipboardSideEffect
+import com.example.sharedclipboard.clipboard_ui.state.ClipboardState
 import com.example.sharedclipboard.domain.ClipboardRepository
 import com.example.sharedclipboard.domain.LocalClipboardProvider
 import kotlinx.coroutines.CoroutineDispatcher
