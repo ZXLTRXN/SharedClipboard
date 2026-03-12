@@ -6,6 +6,7 @@ import com.example.sharedclipboard.domain.AuthRepository
 import com.example.sharedclipboard.domain.ClipboardRepository
 import com.example.sharedclipboard.getPlatform
 import dev.gitlive.firebase.auth.FirebaseAuth
+import dev.gitlive.firebase.auth.FirebaseUser
 import dev.gitlive.firebase.database.DatabaseReference
 import dev.gitlive.firebase.database.FirebaseDatabase
 import io.github.aakira.napier.Napier
@@ -31,11 +32,11 @@ class FirebaseRepository(
     private val roomsRef = database.reference("rooms")
     private val invitesRef = database.reference("invites")
 
-    override suspend fun ensureAuth() {
+    override suspend fun ensureAuth(): FirebaseUser? {
         if (auth.currentUser == null) {
-            Napier.d { "Ensure auth" } // fixme
             auth.signInAnonymously()
         }
+        return auth.currentUser
     }
 
     override fun createRoom() {

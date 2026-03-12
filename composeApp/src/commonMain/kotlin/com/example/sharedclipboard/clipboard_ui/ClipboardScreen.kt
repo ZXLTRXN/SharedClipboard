@@ -29,11 +29,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.sharedclipboard.auth_ui.ErrorScreen
 import com.example.sharedclipboard.clipboard_ui.state.ClipboardIntent
 import com.example.sharedclipboard.clipboard_ui.state.ClipboardSideEffect
 import com.example.sharedclipboard.clipboard_ui.state.ClipboardState
+import com.example.sharedclipboard.common_ui.ErrorScreen
 import com.example.sharedclipboard.common_ui.FlashTextWithDetection
+import com.example.sharedclipboard.common_ui.LoadingScreen
 import com.example.sharedclipboard.common_ui.LocalSnackbarHostState
 import com.example.sharedclipboard.common_ui.ReloadableTextField
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -97,7 +98,9 @@ fun ClipboardScreen(
     modifier: Modifier = Modifier,
 ) {
     when (state) {
-        is ClipboardState.Loading -> {}
+        is ClipboardState.Loading -> {
+            LoadingScreen()
+        }
 
         is ClipboardState.Success -> ClipboardSuccessStateScreen(
             state = state,

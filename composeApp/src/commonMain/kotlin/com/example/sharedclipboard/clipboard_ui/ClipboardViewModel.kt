@@ -11,14 +11,17 @@ import com.example.sharedclipboard.domain.AuthRepository
 import com.example.sharedclipboard.domain.ClipboardRepository
 import com.example.sharedclipboard.domain.LocalClipboardProvider
 import io.github.aakira.napier.Napier
-import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.launch
 import sharedclipboard.composeapp.generated.resources.Res
 import sharedclipboard.composeapp.generated.resources.copied
@@ -31,37 +34,44 @@ class ClipboardViewModel(
     localClipboardProvider: LocalClipboardProvider,
 ) : ViewModel() {
 
-    init {
-        viewModelScope.launch {
-            authRepository.ensureAuth() // fixme
-        }
+    private val stateCombination: Flow<ClipboardState> = combine(
+        repository.observeMessages()
+            .onStart { emit("") },
+        localClipboardProvider.currentClipboard
+            .onStart { emit("") },
+    ) { remoteValue, localValue ->
+        ClipboardState.Success(
+            remoteValue,
+            localValue
+        )
+    }.catch<ClipboardState> { ex ->
+        Napier.e(
+            "Caught exception while producing state combination",
+            ex,
+            this@ClipboardViewModel::class.simpleName
+        )
+        emit(ClipboardState.Error)
     }
 
-    val state by lazy {
-        combine(
-            repository.observeMessages()
-                .onStart { emit("") },
-            localClipboardProvider.currentClipboard
-                .onStart { emit("") },
-        ) { remoteValue, localValue ->
-            ClipboardState.Success(
-                remoteValue,
-                localValue
-            )
-        }.catch<ClipboardState> { ex ->
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val state = flow {
+        val user = authRepository.ensureAuth()
+        emit(user)
+    }.transformLatest { user ->
+        if (user == null) {
             Napier.e(
-                "Cant observe ClipboardViewModel.state",
-                ex,
-                this@ClipboardViewModel::class.simpleName
+                "User is null",
+                tag = this@ClipboardViewModel::class.simpleName
             )
             emit(ClipboardState.Error)
+        } else {
+            emitAll(stateCombination)
         }
-            .stateIn(
-                viewModelScope,
-                SharingStarted.WhileSubscribed(5000),
-                ClipboardState.Loading
-            )
-    }
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        ClipboardState.Loading
+    )
 
     var sideEffect = Channel<ClipboardSideEffect>(Channel.BUFFERED)
         private set

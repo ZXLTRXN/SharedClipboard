@@ -1,8 +1,10 @@
 package com.example.sharedclipboard.domain
 
+import dev.gitlive.firebase.auth.FirebaseUser
+
 interface AuthRepository {
 
-    suspend fun ensureAuth()
+    suspend fun ensureAuth(): FirebaseUser?
 
     fun createRoom()
 

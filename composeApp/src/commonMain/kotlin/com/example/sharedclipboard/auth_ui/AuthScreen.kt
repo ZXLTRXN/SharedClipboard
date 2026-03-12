@@ -22,16 +22,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.sharedclipboard.clipboard_ui.state.ClipboardSideEffect
+import com.example.sharedclipboard.common_ui.ErrorScreen
 import kotlinx.coroutines.flow.receiveAsFlow
-import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import sharedclipboard.composeapp.generated.resources.Res
 import sharedclipboard.composeapp.generated.resources.cancel
 import sharedclipboard.composeapp.generated.resources.connect
 import sharedclipboard.composeapp.generated.resources.createRoom
-import sharedclipboard.composeapp.generated.resources.errorRelogin
 import sharedclipboard.composeapp.generated.resources.joinRoom
 
 @Composable
