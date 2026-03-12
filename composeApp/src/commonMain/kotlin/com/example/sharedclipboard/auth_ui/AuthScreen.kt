@@ -33,8 +33,9 @@ import sharedclipboard.composeapp.generated.resources.createRoom
 import sharedclipboard.composeapp.generated.resources.joinRoom
 
 @Composable
-fun AuthScreenStateful(
+fun AuthJoinExistingRoomScreenStateful(
     navigateToClipboardScreen: () -> Unit,
+    navigateToAuthScreen: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AuthViewModel = koinViewModel()
 ) {
@@ -42,59 +43,35 @@ fun AuthScreenStateful(
     LaunchedEffect(viewModel.sideEffect) {
         viewModel.sideEffect.receiveAsFlow().collect { effect ->
             when (effect) {
-                is AuthSideEffect.GoToMain -> {
+                is AuthSideEffect.GoToClipboardScreen -> {
                     navigateToClipboardScreen()
                 }
             }
         }
     }
 
-    AuthScreen(
+    AuthJoinExistingRoomScreen(
         state = viewModel.state,
-        onCreateRoom = viewModel::createRoom,
-        onJoinExistingRoom = viewModel::joinExistingRoom,
         onJoinExistingRoomRequest = viewModel::requestJoiningTheRoom,
-        onGoToMain = navigateToClipboardScreen,
-        onCancel = viewModel::goToSelector,
+        onGoToAuth = navigateToAuthScreen,
         modifier = modifier
     )
 }
 
 @Composable
-fun AuthScreen(
+fun AuthJoinExistingRoomScreen(
     state: AuthState,
-    onCreateRoom: () -> Unit,
-    onJoinExistingRoom: () -> Unit,
     onJoinExistingRoomRequest: (String) -> Unit,
-    onGoToMain: () -> Unit,
-    onCancel: () -> Unit,
+    onGoToAuth: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val codeInputState = rememberTextFieldState()
 
     when (state) {
-        AuthState.Selector -> {
-            AuthSelectorScreen(
-                onCreateRoom = onCreateRoom,
-                onJoinExistingRoom = onJoinExistingRoom,
-                modifier = modifier
-            )
-        }
-
-        is AuthState.ShowJoinCode -> {
-            AuthJoinCodeScreen(
-                code = state.code,
-                onCancel = onCancel,
-                onGoToMain = onGoToMain,
-                modifier = modifier
-            )
-        }
-
-        is AuthState.JoinExistingRoom -> {
-            AuthJoinExistingRoomScreen(
+        is AuthState.Default -> {
+            AuthJoinExistingRoomDefaultScreen(
                 textFieldState = codeInputState,
                 onAccept = onJoinExistingRoomRequest,
-                onCancel = onCancel,
                 modifier = modifier
             )
         }
@@ -102,28 +79,21 @@ fun AuthScreen(
         is AuthState.Error -> {
             ErrorScreen(
                 modifier = modifier,
-                goAuth = onCancel
+                goAuth = onGoToAuth
             )
         }
     }
 }
 
 @Composable
-fun AuthJoinExistingRoomScreen(
+fun AuthJoinExistingRoomDefaultScreen(
     textFieldState: TextFieldState,
     onAccept: (String) -> Unit,
-    onCancel: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
         modifier.fillMaxSize().padding(16.dp),
     ) {
-        TextButton(
-            onClick = onCancel,
-            modifier = Modifier.align(Alignment.TopStart)
-        ) {
-            Text(stringResource(Res.string.cancel))
-        }
         TextField(
             state = textFieldState,
             modifier = Modifier.align(Alignment.Center).fillMaxWidth()
@@ -139,41 +109,15 @@ fun AuthJoinExistingRoomScreen(
     }
 }
 
-@Composable
-fun AuthSelectorScreen(
-    onCreateRoom: () -> Unit,
-    onJoinExistingRoom: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier.fillMaxSize().padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        OutlinedButton(onClick = onCreateRoom) {
-            Text(stringResource(Res.string.createRoom))
-        }
-        Spacer(
-            Modifier.height(16.dp)
-        )
-        OutlinedButton(onClick = onJoinExistingRoom) {
-            Text(stringResource(Res.string.joinRoom))
-        }
-    }
-}
-
 
 @Composable
 @Preview(showBackground = true)
 fun AuthScreenPreview() {
     MaterialTheme {
-        AuthScreen(
-            state = AuthState.Selector,
-            onCreateRoom = {},
-            onJoinExistingRoom = {},
+        AuthJoinExistingRoomScreen(
+            state = AuthState.Default,
             onJoinExistingRoomRequest = {},
-            onGoToMain = {},
-            onCancel = {},
+            onGoToAuth = {},
             modifier = Modifier
         )
     }

@@ -32,6 +32,9 @@ class FirebaseRepository(
     private val roomsRef = database.reference("rooms")
     private val invitesRef = database.reference("invites")
 
+    override val isRoomAttached: Boolean
+        get() = settings.roomId != null
+
     override suspend fun ensureAuth(): FirebaseUser? {
         if (auth.currentUser == null) {
             auth.signInAnonymously()

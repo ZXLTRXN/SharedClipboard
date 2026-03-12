@@ -1,5 +1,6 @@
 package com.example.sharedclipboard.di
 
+import com.example.sharedclipboard.AppViewModel
 import com.example.sharedclipboard.auth_ui.AuthJoinCodeViewModel
 import com.example.sharedclipboard.auth_ui.AuthViewModel
 import com.example.sharedclipboard.clipboard_ui.ClipboardViewModel
@@ -53,6 +54,12 @@ val sharedModule = module {
         ClipboardRepository::class,
         AuthRepository::class
     )
+
+    viewModel<AppViewModel> {
+        AppViewModel(
+            get()
+        )
+    }
 
     viewModel<ClipboardViewModel> {
         ClipboardViewModel(

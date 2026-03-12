@@ -19,7 +19,6 @@ class AuthJoinCodeViewModel(
 
     init {
         viewModelScope.launch {
-            repository.ensureAuth() // fixme
             try {
                 state = AuthJoinCodeState.ShowJoinCode(repository.generateInviteCode())
             } catch (ex: Exception) {

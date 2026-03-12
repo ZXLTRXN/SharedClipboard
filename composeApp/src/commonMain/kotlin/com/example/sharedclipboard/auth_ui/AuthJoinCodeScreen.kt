@@ -22,7 +22,7 @@ import sharedclipboard.composeapp.generated.resources.errorRelogin
 fun AuthJoinCodeScreenStateful(
     modifier: Modifier = Modifier,
     viewModel: AuthJoinCodeViewModel = koinViewModel(),
-    onCancel: (() -> Unit)? = null,
+
     onGoToMain: (() -> Unit)? = null,
 ) {
     when(val state = viewModel.state) {
@@ -30,7 +30,6 @@ fun AuthJoinCodeScreenStateful(
             AuthJoinCodeScreen(
                 code = state.code,
                 modifier = modifier,
-                onCancel = onCancel,
                 onGoToMain = onGoToMain
             )
         }
@@ -39,7 +38,6 @@ fun AuthJoinCodeScreenStateful(
             AuthJoinCodeScreen(
                 code = stringResource(Res.string.errorRelogin),
                 modifier = modifier,
-                onCancel = onCancel,
                 onGoToMain = onGoToMain
             )
         }
@@ -51,20 +49,11 @@ fun AuthJoinCodeScreenStateful(
 fun AuthJoinCodeScreen(
     code: String,
     modifier: Modifier = Modifier,
-    onCancel: (() -> Unit)? = null,
     onGoToMain: (() -> Unit)? = null,
 ) {
     Box(
         modifier.fillMaxSize().padding(16.dp),
     ) {
-        onCancel?.let {
-            TextButton(
-                onClick = it,
-                modifier = Modifier.align(Alignment.TopStart)
-            ) {
-                Text(stringResource(Res.string.cancel))
-            }
-        }
 
         onGoToMain?.let {
             TextButton(

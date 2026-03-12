@@ -27,9 +27,9 @@ kotlin {
             baseName = "ComposeApp"
             isStatic = true
 
-            export("com.arkivanov.decompose:decompose:3.4.0")
-            export("com.arkivanov.essenty:lifecycle:2.5.0")
-            export("com.arkivanov.essenty:state-keeper:2.5.0")
+//            export(libs.decompose)
+//            export(libs.essenty.lifecycle)
+//            export(libs.essenty.stateKeeper)
         }
     }
     
@@ -72,8 +72,12 @@ kotlin {
 
             implementation(libs.multiplatform.settings.no.arg)
             implementation(libs.napier)
-            implementation(libs.decompose)
-            implementation(libs.decompose.compose)
+
+            implementation(libs.jetbrains.navigation3.ui)
+            implementation(libs.jetbrains.lifecycle.viewmodelNavigation3)
+//            implementation(libs.decompose)
+//            implementation(libs.decompose.compose)
+//            implementation(libs.decompose.jetpack)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

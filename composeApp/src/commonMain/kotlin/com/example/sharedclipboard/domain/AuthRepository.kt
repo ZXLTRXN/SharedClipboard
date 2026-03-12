@@ -4,6 +4,8 @@ import dev.gitlive.firebase.auth.FirebaseUser
 
 interface AuthRepository {
 
+    val isRoomAttached: Boolean
+
     suspend fun ensureAuth(): FirebaseUser?
 
     fun createRoom()
