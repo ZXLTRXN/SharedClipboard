@@ -27,6 +27,9 @@ decompose = "3.4.0"
 essenty = "2.5.0"
 multiplatform-nav3-ui = "1.0.0-alpha06"
 compose-multiplatform-lifecycle = "2.10.0-beta01"
+kotlinStdlib = "2.3.10"
+runner = "1.5.2"
+core = "1.5.0"
 
 
 [libraries]
@@ -78,6 +81,9 @@ decompose-compose = { module = "com.arkivanov.decompose:extensions-compose", ver
 decompose-jetpack = { module = "com.arkivanov.decompose:jetpack-component-context", version.ref = "decompose" }
 essenty-lifecycle = { module = "com.arkivanov.essenty:lifecycle", version.ref = "essenty" }
 essenty-stateKeeper = { module = "com.arkivanov.essenty:state-keeper", version.ref = "essenty" }
+kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlinStdlib" }
+androidx-runner = { group = "androidx.test", name = "runner", version.ref = "runner" }
+androidx-core = { group = "androidx.test", name = "core", version.ref = "core" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -88,3 +94,5 @@ composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "k
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "serializationVersion" }
 gms = { id = "com.google.gms.google-services", version.ref = "gmsVersion" }
+androidKotlinMultiplatformLibrary = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
+androidLint = { id = "com.android.lint", version.ref = "agp" }

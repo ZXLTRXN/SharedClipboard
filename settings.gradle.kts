@@ -33,3 +33,7 @@ plugins {
 }
 
 include(":composeApp")
+include("core:UI")
+include("core:Navigation")
+include("feature:Auth")
+include("feature:Clipboard")
