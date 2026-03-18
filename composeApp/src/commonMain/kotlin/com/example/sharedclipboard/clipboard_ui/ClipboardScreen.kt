@@ -43,6 +43,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import sharedclipboard.composeapp.generated.resources.Res
 import sharedclipboard.composeapp.generated.resources.emptyBuffer
+import sharedclipboard.composeapp.generated.resources.errorRelogin
 import sharedclipboard.composeapp.generated.resources.localClipboard
 import sharedclipboard.composeapp.generated.resources.send
 import sharedclipboard.composeapp.generated.resources.showJoinCode
@@ -110,6 +111,8 @@ fun ClipboardScreen(
 
         ClipboardState.Error -> {
             ErrorScreen(
+                errorText = Res.string.errorRelogin,
+                buttonText = Res.string.toAuth,
                 modifier = modifier,
                 goAuth = {
                     onIntent(ClipboardIntent.goToAuth)

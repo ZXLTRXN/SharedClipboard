@@ -15,7 +15,8 @@ import sharedclipboard.composeapp.generated.resources.toAuth
 
 @Composable
 fun ErrorScreen(
-    error: StringResource = Res.string.errorRelogin,
+    errorText: StringResource,
+    buttonText: StringResource,
     goAuth: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -23,10 +24,10 @@ fun ErrorScreen(
         contentAlignment = Alignment.Center,
         modifier = modifier.fillMaxSize()
     ) {
-        Text(stringResource(error))
+        Text(stringResource(errorText))
 
         TextButton(onClick = goAuth, modifier = Modifier.align(Alignment.TopStart)) {
-            Text(stringResource(Res.string.toAuth))
+            Text(stringResource(buttonText))
         }
     }
 }

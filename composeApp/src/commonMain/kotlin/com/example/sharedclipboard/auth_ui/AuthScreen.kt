@@ -30,7 +30,9 @@ import sharedclipboard.composeapp.generated.resources.Res
 import sharedclipboard.composeapp.generated.resources.cancel
 import sharedclipboard.composeapp.generated.resources.connect
 import sharedclipboard.composeapp.generated.resources.createRoom
+import sharedclipboard.composeapp.generated.resources.errorRelogin
 import sharedclipboard.composeapp.generated.resources.joinRoom
+import sharedclipboard.composeapp.generated.resources.toAuth
 
 @Composable
 fun AuthJoinExistingRoomScreenStateful(
@@ -78,6 +80,8 @@ fun AuthJoinExistingRoomScreen(
 
         is AuthState.Error -> {
             ErrorScreen(
+                errorText = Res.string.errorRelogin,
+                buttonText = Res.string.toAuth,
                 modifier = modifier,
                 goAuth = onGoToAuth
             )
