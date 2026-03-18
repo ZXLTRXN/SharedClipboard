@@ -2,12 +2,12 @@ package com.example.sharedclipboard.clipboard_ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.feature.auth.domain.AuthRepository
 import com.example.sharedclipboard.clipboard_ui.state.ClipboardIntent
 import com.example.sharedclipboard.clipboard_ui.state.ClipboardSideEffect
 import com.example.sharedclipboard.clipboard_ui.state.ClipboardSideEffect.GoToAuth
 import com.example.sharedclipboard.clipboard_ui.state.ClipboardSideEffect.ShowSnackbar
 import com.example.sharedclipboard.clipboard_ui.state.ClipboardState
-import com.example.sharedclipboard.domain.AuthRepository
 import com.example.sharedclipboard.domain.ClipboardRepository
 import com.example.sharedclipboard.domain.LocalClipboardProvider
 import io.github.aakira.napier.Napier

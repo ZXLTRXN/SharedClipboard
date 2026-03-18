@@ -75,9 +75,10 @@ kotlin {
 
             implementation(libs.jetbrains.navigation3.ui)
             implementation(libs.jetbrains.lifecycle.viewmodelNavigation3)
-//            implementation(libs.decompose)
-//            implementation(libs.decompose.compose)
-//            implementation(libs.decompose.jetpack)
+
+            implementation(project(":feature:Auth"))
+            implementation(project(":core:UI"))
+
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

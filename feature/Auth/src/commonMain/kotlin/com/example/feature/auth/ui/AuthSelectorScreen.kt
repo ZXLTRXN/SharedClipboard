@@ -1,4 +1,4 @@
-package com.example.sharedclipboard.auth_ui
+package com.example.feature.auth.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,9 +13,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
-import sharedclipboard.composeapp.generated.resources.Res
-import sharedclipboard.composeapp.generated.resources.createRoom
-import sharedclipboard.composeapp.generated.resources.joinRoom
+import sharedclipboard.feature.auth.generated.resources.Res
+import sharedclipboard.feature.auth.generated.resources.createRoom
+import sharedclipboard.feature.auth.generated.resources.joinRoom
 
 @Composable
 fun AuthSelectorScreen(

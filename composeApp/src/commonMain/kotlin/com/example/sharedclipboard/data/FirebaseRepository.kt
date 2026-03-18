@@ -1,8 +1,8 @@
 package com.example.sharedclipboard.data
 
+import com.example.feature.auth.domain.AuthRepository
 import com.example.sharedclipboard.data.models.ClipboardDataDto
 import com.example.sharedclipboard.data.models.InviteDto
-import com.example.sharedclipboard.domain.AuthRepository
 import com.example.sharedclipboard.domain.ClipboardRepository
 import com.example.sharedclipboard.getPlatform
 import dev.gitlive.firebase.auth.FirebaseAuth

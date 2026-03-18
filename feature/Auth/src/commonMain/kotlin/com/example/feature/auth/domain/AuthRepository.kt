@@ -1,4 +1,4 @@
-package com.example.sharedclipboard.domain
+package com.example.feature.auth.domain
 
 import dev.gitlive.firebase.auth.FirebaseUser
 

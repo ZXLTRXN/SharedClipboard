@@ -10,7 +10,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.sharedclipboard.common_ui.LocalSnackbarHostState
+import com.example.core.ui.composables.LocalSnackbarHostState
 
 @Composable
 @Preview

@@ -1,4 +1,4 @@
-package com.example.sharedclipboard.common_ui
+package com.example.core.ui.composables
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

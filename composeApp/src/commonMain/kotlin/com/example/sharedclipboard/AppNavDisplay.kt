@@ -11,10 +11,10 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
-import com.example.sharedclipboard.auth_ui.AuthJoinCodeScreenStateful
-import com.example.sharedclipboard.auth_ui.AuthJoinExistingRoomScreenStateful
-import com.example.sharedclipboard.auth_ui.AuthRoutes
-import com.example.sharedclipboard.auth_ui.AuthSelectorScreen
+import com.example.feature.auth.ui.AuthJoinCodeScreenStateful
+import com.example.feature.auth.ui.AuthJoinExistingRoomScreenStateful
+import com.example.feature.auth.ui.AuthRoutes
+import com.example.feature.auth.ui.AuthSelectorScreen
 import com.example.sharedclipboard.clipboard_ui.ClipboardRoutes
 import com.example.sharedclipboard.clipboard_ui.ClipboardScreenStateful
 import kotlinx.serialization.ExperimentalSerializationApi

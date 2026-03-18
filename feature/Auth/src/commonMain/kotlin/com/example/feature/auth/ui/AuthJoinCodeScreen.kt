@@ -1,4 +1,4 @@
-package com.example.sharedclipboard.auth_ui
+package com.example.feature.auth.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,10 +13,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
-import sharedclipboard.composeapp.generated.resources.Res
-import sharedclipboard.composeapp.generated.resources.cancel
-import sharedclipboard.composeapp.generated.resources.clipboard
-import sharedclipboard.composeapp.generated.resources.errorRelogin
+import sharedclipboard.feature.auth.generated.resources.Res
+import sharedclipboard.feature.auth.generated.resources.clipboard
+import sharedclipboard.feature.auth.generated.resources.errorRelogin
 
 @Composable
 fun AuthJoinCodeScreenStateful(

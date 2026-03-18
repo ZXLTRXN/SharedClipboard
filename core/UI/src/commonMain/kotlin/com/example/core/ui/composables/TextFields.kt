@@ -18,6 +18,7 @@ import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import sharedclipboard.core.ui.generated.resources.Res
+import sharedclipboard.core.ui.generated.resources.refresh_ic
 
 @Composable
 fun ReloadableTextField(
@@ -42,16 +43,16 @@ fun ReloadableTextField(
             Text(stringResource(labelRes))
         },
         shape = MaterialTheme.shapes.medium,
-//        trailingIcon = { fixme
-//            IconButton(
-//                onClick = onReload
-//            ) {
-//                Icon(
-//                    vectorResource(Res.drawable.res),
-//                    contentDescription = null
-//                )
-//            }
-//        },
+        trailingIcon = {
+            IconButton(
+                onClick = onReload
+            ) {
+                Icon(
+                    vectorResource(Res.drawable.refresh_ic),
+                    contentDescription = null
+                )
+            }
+        },
         colors = TextFieldDefaults.colors(
             unfocusedContainerColor = Color.Transparent,
             focusedContainerColor = Color.Transparent,

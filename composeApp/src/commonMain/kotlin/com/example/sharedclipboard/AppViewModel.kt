@@ -2,7 +2,8 @@ package com.example.sharedclipboard
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.sharedclipboard.domain.AuthRepository
+import com.example.feature.auth.domain.AuthRepository
+
 import kotlinx.coroutines.launch
 
 class AppViewModel(

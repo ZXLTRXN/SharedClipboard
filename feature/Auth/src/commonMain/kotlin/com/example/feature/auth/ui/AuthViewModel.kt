@@ -1,11 +1,11 @@
-package com.example.sharedclipboard.auth_ui
+package com.example.feature.auth.ui
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.sharedclipboard.domain.AuthRepository
+import com.example.feature.auth.domain.AuthRepository
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.StringResource

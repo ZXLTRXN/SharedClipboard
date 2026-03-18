@@ -1,0 +1,15 @@
+<resources>
+    <string name="localClipboard">Local value</string>
+    <string name="send">Send</string>
+    <string name="emptyBuffer">Remote buffer is empty</string>
+    <string name="copied">Copied</string>
+    <string name="failedOpenURL">Failed to open as URL</string>
+    <string name="errorRelogin">Error occurred, please relogin</string>
+    <string name="showJoinCode">Join code</string>
+    <string name="toAuth">Auth</string>
+    <string name="cancel">Cancel</string>
+    <string name="connect">Connect</string>
+    <string name="clipboard">Clipboard</string>
+    <string name="createRoom">Create room</string>
+    <string name="joinRoom">Join room</string>
+</resources>
