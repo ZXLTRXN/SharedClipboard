@@ -1,4 +1,4 @@
-package com.example.feature.auth.domain
+package com.example.firebaseapi.domain
 
 import dev.gitlive.firebase.auth.FirebaseUser
 

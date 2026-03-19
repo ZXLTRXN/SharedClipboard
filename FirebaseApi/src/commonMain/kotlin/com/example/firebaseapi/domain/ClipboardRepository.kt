@@ -1,4 +1,4 @@
-package com.example.feature.clipboard.domain
+package com.example.firebaseapi.domain
 
 import kotlinx.coroutines.flow.Flow
 

@@ -2,8 +2,6 @@ package com.example.feature.clipboard.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.feature.clipboard.domain.ClipboardRepository
-import com.example.feature.clipboard.domain.EnsureAuth
 import com.example.feature.clipboard.domain.LocalClipboardProvider
 import com.example.feature.clipboard.ui.state.ClipboardIntent
 import com.example.feature.clipboard.ui.state.ClipboardSideEffect
@@ -25,10 +23,12 @@ import sharedclipboard.feature.clipboard.generated.resources.Res
 import sharedclipboard.feature.clipboard.generated.resources.copied
 import sharedclipboard.feature.clipboard.generated.resources.errorRelogin
 import sharedclipboard.feature.clipboard.generated.resources.failedOpenURL
+import com.example.firebaseapi.domain.AuthRepository
+import com.example.firebaseapi.domain.ClipboardRepository
 
 class ClipboardViewModel(
     private val repository: ClipboardRepository,
-    private val authRepository: EnsureAuth,
+    private val authRepository: AuthRepository,
     localClipboardProvider: LocalClipboardProvider,
 ) : ViewModel() {
 
@@ -53,7 +53,7 @@ class ClipboardViewModel(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val state = flow {
-        val user = authRepository.getUserOrNull()
+        val user = authRepository.ensureAuth()
         emit(user)
     }.transformLatest { user ->
         if (user == null) {

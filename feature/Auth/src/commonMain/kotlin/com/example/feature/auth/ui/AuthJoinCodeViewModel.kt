@@ -5,10 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.feature.auth.domain.AuthRepository
 //import io.github.aakira.napier.Napier
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.StringResource
+import com.example.firebaseapi.domain.AuthRepository
 
 class AuthJoinCodeViewModel(
     private val repository: AuthRepository

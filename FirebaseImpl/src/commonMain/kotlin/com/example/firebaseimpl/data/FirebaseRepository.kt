@@ -1,19 +1,14 @@
-package com.example.sharedclipboard.data
+package com.example.firebaseimpl.data
 
-import com.example.feature.auth.domain.AuthRepository
-import com.example.feature.clipboard.domain.ClipboardRepository
-import com.example.feature.clipboard.domain.EnsureAuth
 import com.example.sharedclipboard.data.models.ClipboardDataDto
 import com.example.sharedclipboard.data.models.InviteDto
-import com.example.sharedclipboard.getPlatform
 import dev.gitlive.firebase.auth.FirebaseAuth
 import dev.gitlive.firebase.auth.FirebaseUser
 import dev.gitlive.firebase.database.DatabaseReference
 import dev.gitlive.firebase.database.FirebaseDatabase
-import io.github.aakira.napier.Napier
+//import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -22,13 +17,16 @@ import kotlinx.coroutines.withContext
 import kotlin.random.Random
 import kotlin.random.nextULong
 import kotlin.time.Clock
+import com.example.firebaseapi.domain.ClipboardRepository
+import com.example.firebaseapi.domain.AuthRepository
+import com.example.firebaseimpl.platform
 
-class FirebaseRepository(
+internal class FirebaseRepository(
     database: FirebaseDatabase,
     private val auth: FirebaseAuth,
     private val settings: RoomSettings,
     private val ioDispatcher: CoroutineDispatcher
-) : ClipboardRepository, AuthRepository, EnsureAuth {
+) : ClipboardRepository, AuthRepository {
 
     private val roomsRef = database.reference("rooms")
     private val invitesRef = database.reference("invites")
@@ -41,10 +39,6 @@ class FirebaseRepository(
             auth.signInAnonymously()
         }
         return auth.currentUser
-    }
-
-    override suspend fun getUserOrNull(): FirebaseUser? {
-        return ensureAuth()
     }
 
     override fun createRoom() {
@@ -91,11 +85,11 @@ class FirebaseRepository(
                 }
             }
         } catch (e: Exception) {
-            Napier.e(
-                "Cant join the room",
-                e,
-                this::class.simpleName
-            )
+//            Napier.e(
+//                "Cant join the room",
+//                e,
+//                this::class.simpleName
+//            )
         }
         return@withContext false
     }
@@ -114,7 +108,7 @@ class FirebaseRepository(
             text = text,
             timestamp = Clock.System.now().toEpochMilliseconds(),
             senderId = deviceId,
-            senderName = getPlatform().name
+            senderName = platform()
         )
 
         getLastClipSnapshot(roomId).setValue(newMessage)
@@ -128,7 +122,7 @@ class FirebaseRepository(
             throw IllegalStateException("No saved roomId")
         }
 
-        Napier.d { "observeMessages" } // fixme
+//        Napier.d { "observeMessages" } // fixme
         return getLastClipSnapshot(roomId).valueEvents.mapNotNull { snapshot ->
             snapshot.value<ClipboardDataDto?>()?.text
         }.flowOn(ioDispatcher)

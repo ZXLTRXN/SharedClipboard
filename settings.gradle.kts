@@ -33,7 +33,11 @@ plugins {
 }
 
 include(":composeApp")
+include(":FirebaseApi")
 include("core:UI")
 include("core:Navigation")
 include("feature:Auth")
 include("feature:Clipboard")
+
+include(":FirebaseImpl")
+include(":core:DataUtils")

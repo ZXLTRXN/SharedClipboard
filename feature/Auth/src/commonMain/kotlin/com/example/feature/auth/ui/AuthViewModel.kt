@@ -5,10 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.feature.auth.domain.AuthRepository
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.StringResource
+import com.example.firebaseapi.domain.AuthRepository
+
 
 class AuthViewModel(
     private val repository: AuthRepository
