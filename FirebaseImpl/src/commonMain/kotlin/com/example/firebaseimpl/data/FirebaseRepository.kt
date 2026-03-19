@@ -6,7 +6,7 @@ import dev.gitlive.firebase.auth.FirebaseAuth
 import dev.gitlive.firebase.auth.FirebaseUser
 import dev.gitlive.firebase.database.DatabaseReference
 import dev.gitlive.firebase.database.FirebaseDatabase
-//import io.github.aakira.napier.Napier
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -85,11 +85,11 @@ internal class FirebaseRepository(
                 }
             }
         } catch (e: Exception) {
-//            Napier.e(
-//                "Cant join the room",
-//                e,
-//                this::class.simpleName
-//            )
+            Napier.e(
+                "Cant join the room",
+                e,
+                this::class.simpleName
+            )
         }
         return@withContext false
     }
@@ -122,7 +122,6 @@ internal class FirebaseRepository(
             throw IllegalStateException("No saved roomId")
         }
 
-//        Napier.d { "observeMessages" } // fixme
         return getLastClipSnapshot(roomId).valueEvents.mapNotNull { snapshot ->
             snapshot.value<ClipboardDataDto?>()?.text
         }.flowOn(ioDispatcher)

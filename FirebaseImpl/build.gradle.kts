@@ -69,6 +69,8 @@ kotlin {
                 implementation(project.dependencies.platform(libs.koin.bom))
                 implementation(libs.koin.core)
 
+                implementation(libs.napier)
+
                 implementation(libs.multiplatform.settings.no.arg)
 
                 implementation(project(":FirebaseApi"))

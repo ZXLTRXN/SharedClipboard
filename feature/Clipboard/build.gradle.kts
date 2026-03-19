@@ -80,7 +80,7 @@ kotlin {
                 implementation(libs.koin.compose)
                 implementation(libs.koin.compose.viewmodel)
 
-//                implementation(libs.napier)
+                implementation(libs.napier)
 
                 implementation(libs.jetbrains.navigation3.ui)
                 implementation(libs.jetbrains.lifecycle.viewmodelNavigation3)
@@ -108,6 +108,11 @@ kotlin {
                 implementation(libs.google.firebase.auth)
 
                 implementation(libs.koin.android)
+            }
+        }
+
+        jvmMain {
+            dependencies {
             }
         }
 

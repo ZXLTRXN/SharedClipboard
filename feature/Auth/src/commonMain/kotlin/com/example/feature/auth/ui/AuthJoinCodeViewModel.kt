@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-//import io.github.aakira.napier.Napier
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.StringResource
 import com.example.firebaseapi.domain.AuthRepository
@@ -22,11 +22,11 @@ class AuthJoinCodeViewModel(
             try {
                 state = AuthJoinCodeState.ShowJoinCode(repository.generateInviteCode())
             } catch (ex: Exception) {
-//                Napier.e( fixme
-//                    "Cant generate code",
-//                    ex,
-//                    this::class.simpleName
-//                )
+                Napier.e(
+                    "Cant generate code",
+                    ex,
+                    this::class.simpleName
+                )
                 state = AuthJoinCodeState.Error(null)
             }
         }

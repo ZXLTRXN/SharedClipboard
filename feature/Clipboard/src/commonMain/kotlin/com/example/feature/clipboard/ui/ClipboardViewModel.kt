@@ -6,7 +6,7 @@ import com.example.feature.clipboard.domain.LocalClipboardProvider
 import com.example.feature.clipboard.ui.state.ClipboardIntent
 import com.example.feature.clipboard.ui.state.ClipboardSideEffect
 import com.example.feature.clipboard.ui.state.ClipboardState
-//import io.github.aakira.napier.Napier
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -38,16 +38,20 @@ class ClipboardViewModel(
         localClipboardProvider.currentClipboard
             .onStart { emit("") },
     ) { remoteValue, localValue ->
+        Napier.d(
+            "producing state combination: remoteValue: $remoteValue, localValue: $localValue",
+            tag = this::class.simpleName
+        )
         ClipboardState.Success(
             remoteValue,
             localValue
         )
     }.catch<ClipboardState> { ex ->
-//        Napier.e( fixme
-//            "Caught exception while producing state combination",
-//            ex,
-//            this@ClipboardViewModel::class.simpleName
-//        )
+        Napier.e(
+            "Caught exception while producing state combination",
+            ex,
+            this@ClipboardViewModel::class.simpleName
+        )
         emit(ClipboardState.Error)
     }
 
@@ -57,10 +61,10 @@ class ClipboardViewModel(
         emit(user)
     }.transformLatest { user ->
         if (user == null) {
-//            Napier.e( fixme
-//                "User is null",
-//                tag = this@ClipboardViewModel::class.simpleName
-//            )
+            Napier.e(
+                "User is null",
+                tag = this@ClipboardViewModel::class.simpleName
+            )
             emit(ClipboardState.Error)
         } else {
             emitAll(stateCombination)
@@ -99,11 +103,11 @@ class ClipboardViewModel(
             try {
                 repository.saveMessage(localClipboard)
             } catch (ex: IllegalStateException) {
-//                Napier.e( fixme
-//                    "Cant save message",
-//                    ex,
-//                    this::class.simpleName
-//                )
+                Napier.e(
+                    "Cant save message",
+                    ex,
+                    this::class.simpleName
+                )
                 sideEffect.trySend(ClipboardSideEffect.ShowSnackbar(Res.string.errorRelogin))
                 sideEffect.trySend(ClipboardSideEffect.GoToAuth)
             }

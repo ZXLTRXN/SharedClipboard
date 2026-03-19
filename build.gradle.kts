@@ -12,3 +12,15 @@ plugins {
     alias(libs.plugins.androidKotlinMultiplatformLibrary) apply false
     alias(libs.plugins.androidLint) apply false
 }
+
+subprojects {
+    configurations.all {
+        if (name.contains("jvm", ignoreCase = true)) {
+            resolutionStrategy.eachDependency {
+                if (requested.group == "io.github.aakira" && requested.name == "napier") {
+                    useTarget("io.github.aakira:napier-jvm:${requested.version}")
+                }
+            }
+        }
+    }
+}
