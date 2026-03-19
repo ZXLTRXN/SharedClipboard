@@ -26,10 +26,6 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
-
-//            export(libs.decompose)
-//            export(libs.essenty.lifecycle)
-//            export(libs.essenty.stateKeeper)
         }
     }
     
@@ -76,8 +72,10 @@ kotlin {
             implementation(libs.jetbrains.navigation3.ui)
             implementation(libs.jetbrains.lifecycle.viewmodelNavigation3)
 
-            implementation(project(":feature:Auth"))
             implementation(project(":core:UI"))
+            implementation(project(":feature:Clipboard"))
+            implementation(project(":feature:Auth"))
+
 
         }
         commonTest.dependencies {

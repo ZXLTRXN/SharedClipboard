@@ -1,6 +1,6 @@
 package com.example.sharedclipboard.data
 
-import com.example.sharedclipboard.domain.LocalClipboardProvider
+import com.example.feature.clipboard.domain.LocalClipboardProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import java.awt.Toolkit
 import java.awt.datatransfer.DataFlavor

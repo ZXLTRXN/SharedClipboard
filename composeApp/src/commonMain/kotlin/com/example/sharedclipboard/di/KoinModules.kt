@@ -1,11 +1,11 @@
 package com.example.sharedclipboard.di
 
 import com.example.feature.auth.domain.AuthRepository
+import com.example.feature.clipboard.domain.ClipboardRepository
+import com.example.feature.clipboard.domain.EnsureAuth
 import com.example.sharedclipboard.AppViewModel
-import com.example.sharedclipboard.clipboard_ui.ClipboardViewModel
 import com.example.sharedclipboard.data.FirebaseRepository
 import com.example.sharedclipboard.data.RoomSettings
-import com.example.sharedclipboard.domain.ClipboardRepository
 import com.russhwolf.settings.Settings
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.FirebaseAuth
@@ -50,19 +50,12 @@ val sharedModule = module {
         )
     } binds arrayOf(
         ClipboardRepository::class,
-        AuthRepository::class
+        AuthRepository::class,
+        EnsureAuth::class
     )
 
     viewModel<AppViewModel> {
         AppViewModel(
-            get()
-        )
-    }
-
-    viewModel<ClipboardViewModel> {
-        ClipboardViewModel(
-            get(),
-            get(),
             get()
         )
     }

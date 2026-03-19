@@ -1,6 +1,7 @@
 package com.example.sharedclipboard.di
 
 import com.example.feature.auth.authModule
+import com.example.feature.clipboard.clipboardModule
 import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
 import org.koin.dsl.KoinAppDeclaration
@@ -11,6 +12,7 @@ fun initKoin(config: KoinAppDeclaration? = null): KoinApplication {
         includes(config)
         modules(
             authModule,
+            clipboardModule,
             sharedModule,
             platformModule
         )

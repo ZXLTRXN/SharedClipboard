@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.feature.auth.domain.AuthRepository
-import io.github.aakira.napier.Napier
+//import io.github.aakira.napier.Napier
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.StringResource
 
@@ -22,11 +22,11 @@ class AuthJoinCodeViewModel(
             try {
                 state = AuthJoinCodeState.ShowJoinCode(repository.generateInviteCode())
             } catch (ex: Exception) {
-                Napier.e(
-                    "Cant generate code",
-                    ex,
-                    this::class.simpleName
-                )
+//                Napier.e( fixme
+//                    "Cant generate code",
+//                    ex,
+//                    this::class.simpleName
+//                )
                 state = AuthJoinCodeState.Error(null)
             }
         }

@@ -1,4 +1,4 @@
-package com.example.sharedclipboard.clipboard_ui
+package com.example.feature.clipboard.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -31,23 +31,23 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.core.ui.composables.LoadingScreen
 import com.example.core.ui.composables.LocalSnackbarHostState
-import com.example.sharedclipboard.clipboard_ui.state.ClipboardIntent
-import com.example.sharedclipboard.clipboard_ui.state.ClipboardSideEffect
-import com.example.sharedclipboard.clipboard_ui.state.ClipboardState
 import com.example.core.ui.composables.ErrorScreen
 import com.example.core.ui.composables.FlashTextWithDetection
 import com.example.core.ui.composables.ReloadableTextField
+import com.example.feature.clipboard.ui.state.ClipboardIntent
+import com.example.feature.clipboard.ui.state.ClipboardSideEffect
+import com.example.feature.clipboard.ui.state.ClipboardState
 import kotlinx.coroutines.flow.receiveAsFlow
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
-import sharedclipboard.composeapp.generated.resources.Res
-import sharedclipboard.composeapp.generated.resources.emptyBuffer
-import sharedclipboard.composeapp.generated.resources.errorRelogin
-import sharedclipboard.composeapp.generated.resources.localClipboard
-import sharedclipboard.composeapp.generated.resources.send
-import sharedclipboard.composeapp.generated.resources.showJoinCode
-import sharedclipboard.composeapp.generated.resources.toAuth
+import sharedclipboard.feature.clipboard.generated.resources.Res
+import sharedclipboard.feature.clipboard.generated.resources.emptyBuffer
+import sharedclipboard.feature.clipboard.generated.resources.errorRelogin
+import sharedclipboard.feature.clipboard.generated.resources.localClipboard
+import sharedclipboard.feature.clipboard.generated.resources.send
+import sharedclipboard.feature.clipboard.generated.resources.showJoinCode
+import sharedclipboard.feature.clipboard.generated.resources.toAuth
 
 @Composable
 fun ClipboardScreenStateful(
@@ -85,8 +85,8 @@ fun ClipboardScreenStateful(
                 ClipboardIntent.FailedToOpenUri,
                 ClipboardIntent.Copied -> viewModel.process(intent)
 
-                ClipboardIntent.goToAuth -> onGoToAuth.invoke()
-                ClipboardIntent.goToShowJoinCode -> onGoToJoinCode()
+                ClipboardIntent.GoToAuth -> onGoToAuth.invoke()
+                ClipboardIntent.GoToShowJoinCode -> onGoToJoinCode()
             }
         }
     )
@@ -115,7 +115,7 @@ fun ClipboardScreen(
                 buttonText = Res.string.toAuth,
                 modifier = modifier,
                 goAuth = {
-                    onIntent(ClipboardIntent.goToAuth)
+                    onIntent(ClipboardIntent.GoToAuth)
                 }
             )
         }
@@ -151,7 +151,7 @@ fun ClipboardSuccessStateScreen(
         ) {
             TextButton(onClick = {
                 onIntent(
-                    ClipboardIntent.goToAuth
+                    ClipboardIntent.GoToAuth
                 )
             }) {
                 Text(stringResource(Res.string.toAuth))
@@ -159,7 +159,7 @@ fun ClipboardSuccessStateScreen(
 
             TextButton(onClick = {
                 onIntent(
-                    ClipboardIntent.goToShowJoinCode
+                    ClipboardIntent.GoToShowJoinCode
                 )
             }) {
                 Text(stringResource(Res.string.showJoinCode))

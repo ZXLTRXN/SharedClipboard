@@ -1,16 +1,14 @@
-package com.example.sharedclipboard.clipboard_ui
+package com.example.feature.clipboard.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.feature.auth.domain.AuthRepository
-import com.example.sharedclipboard.clipboard_ui.state.ClipboardIntent
-import com.example.sharedclipboard.clipboard_ui.state.ClipboardSideEffect
-import com.example.sharedclipboard.clipboard_ui.state.ClipboardSideEffect.GoToAuth
-import com.example.sharedclipboard.clipboard_ui.state.ClipboardSideEffect.ShowSnackbar
-import com.example.sharedclipboard.clipboard_ui.state.ClipboardState
-import com.example.sharedclipboard.domain.ClipboardRepository
-import com.example.sharedclipboard.domain.LocalClipboardProvider
-import io.github.aakira.napier.Napier
+import com.example.feature.clipboard.domain.ClipboardRepository
+import com.example.feature.clipboard.domain.EnsureAuth
+import com.example.feature.clipboard.domain.LocalClipboardProvider
+import com.example.feature.clipboard.ui.state.ClipboardIntent
+import com.example.feature.clipboard.ui.state.ClipboardSideEffect
+import com.example.feature.clipboard.ui.state.ClipboardState
+//import io.github.aakira.napier.Napier
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -23,14 +21,14 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.launch
-import sharedclipboard.composeapp.generated.resources.Res
-import sharedclipboard.composeapp.generated.resources.copied
-import sharedclipboard.composeapp.generated.resources.errorRelogin
-import sharedclipboard.composeapp.generated.resources.failedOpenURL
+import sharedclipboard.feature.clipboard.generated.resources.Res
+import sharedclipboard.feature.clipboard.generated.resources.copied
+import sharedclipboard.feature.clipboard.generated.resources.errorRelogin
+import sharedclipboard.feature.clipboard.generated.resources.failedOpenURL
 
 class ClipboardViewModel(
     private val repository: ClipboardRepository,
-    private val authRepository: AuthRepository,
+    private val authRepository: EnsureAuth,
     localClipboardProvider: LocalClipboardProvider,
 ) : ViewModel() {
 
@@ -45,24 +43,24 @@ class ClipboardViewModel(
             localValue
         )
     }.catch<ClipboardState> { ex ->
-        Napier.e(
-            "Caught exception while producing state combination",
-            ex,
-            this@ClipboardViewModel::class.simpleName
-        )
+//        Napier.e( fixme
+//            "Caught exception while producing state combination",
+//            ex,
+//            this@ClipboardViewModel::class.simpleName
+//        )
         emit(ClipboardState.Error)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val state = flow {
-        val user = authRepository.ensureAuth()
+        val user = authRepository.getUserOrNull()
         emit(user)
     }.transformLatest { user ->
         if (user == null) {
-            Napier.e(
-                "User is null",
-                tag = this@ClipboardViewModel::class.simpleName
-            )
+//            Napier.e( fixme
+//                "User is null",
+//                tag = this@ClipboardViewModel::class.simpleName
+//            )
             emit(ClipboardState.Error)
         } else {
             emitAll(stateCombination)
@@ -83,15 +81,15 @@ class ClipboardViewModel(
             }
 
             ClipboardIntent.Copied -> sideEffect.trySend(
-                ShowSnackbar(Res.string.copied)
+                ClipboardSideEffect.ShowSnackbar(Res.string.copied)
             )
 
             ClipboardIntent.FailedToOpenUri -> sideEffect.trySend(
-                ShowSnackbar(Res.string.failedOpenURL)
+                ClipboardSideEffect.ShowSnackbar(Res.string.failedOpenURL)
             )
 
-            ClipboardIntent.goToAuth,
-            ClipboardIntent.goToShowJoinCode -> {
+            ClipboardIntent.GoToAuth,
+            ClipboardIntent.GoToShowJoinCode -> {
             }
         }
     }
@@ -101,13 +99,13 @@ class ClipboardViewModel(
             try {
                 repository.saveMessage(localClipboard)
             } catch (ex: IllegalStateException) {
-                Napier.e(
-                    "Cant save message",
-                    ex,
-                    this::class.simpleName
-                )
-                sideEffect.trySend(ShowSnackbar(Res.string.errorRelogin))
-                sideEffect.trySend(GoToAuth)
+//                Napier.e( fixme
+//                    "Cant save message",
+//                    ex,
+//                    this::class.simpleName
+//                )
+                sideEffect.trySend(ClipboardSideEffect.ShowSnackbar(Res.string.errorRelogin))
+                sideEffect.trySend(ClipboardSideEffect.GoToAuth)
             }
         }
     }

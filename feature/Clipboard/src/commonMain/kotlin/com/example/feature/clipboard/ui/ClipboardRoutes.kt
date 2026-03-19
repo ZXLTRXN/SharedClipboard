@@ -1,4 +1,4 @@
-package com.example.sharedclipboard.clipboard_ui
+package com.example.feature.clipboard.ui
 
 import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable

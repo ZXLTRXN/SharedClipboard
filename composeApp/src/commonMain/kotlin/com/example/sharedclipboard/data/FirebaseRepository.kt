@@ -1,9 +1,10 @@
 package com.example.sharedclipboard.data
 
 import com.example.feature.auth.domain.AuthRepository
+import com.example.feature.clipboard.domain.ClipboardRepository
+import com.example.feature.clipboard.domain.EnsureAuth
 import com.example.sharedclipboard.data.models.ClipboardDataDto
 import com.example.sharedclipboard.data.models.InviteDto
-import com.example.sharedclipboard.domain.ClipboardRepository
 import com.example.sharedclipboard.getPlatform
 import dev.gitlive.firebase.auth.FirebaseAuth
 import dev.gitlive.firebase.auth.FirebaseUser
@@ -27,7 +28,7 @@ class FirebaseRepository(
     private val auth: FirebaseAuth,
     private val settings: RoomSettings,
     private val ioDispatcher: CoroutineDispatcher
-) : ClipboardRepository, AuthRepository {
+) : ClipboardRepository, AuthRepository, EnsureAuth {
 
     private val roomsRef = database.reference("rooms")
     private val invitesRef = database.reference("invites")
@@ -40,6 +41,10 @@ class FirebaseRepository(
             auth.signInAnonymously()
         }
         return auth.currentUser
+    }
+
+    override suspend fun getUserOrNull(): FirebaseUser? {
+        return ensureAuth()
     }
 
     override fun createRoom() {

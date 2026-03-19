@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
@@ -11,14 +13,25 @@ plugins {
 
 kotlin {
 
+    jvm {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+        }
+
+        attributes.attribute(
+            TargetJvmEnvironment.TARGET_JVM_ENVIRONMENT_ATTRIBUTE,
+            objects.named(TargetJvmEnvironment.STANDARD_JVM)
+        )
+    }
+
     // Target declarations - add or remove as needed below. These define
     // which platforms this KMP module supports.
     // See: https://kotlinlang.org/docs/multiplatform-discover-project.html#targets
     androidLibrary {
         namespace = "com.example.feature.auth"
-        compileSdk = 36
-        minSdk = 29
-
+        compileSdk = libs.versions.android.compileSdk.get().toInt()
+        minSdk = libs.versions.android.minSdk.get().toInt()
+        experimentalProperties["android.experimental.kmp.enableAndroidResources"] = true
         withHostTestBuilder {
         }
 
@@ -79,7 +92,7 @@ kotlin {
                 implementation(libs.koin.compose)
                 implementation(libs.koin.compose.viewmodel)
 
-                implementation(libs.napier)
+//                implementation(libs.napier)
 
                 implementation(libs.jetbrains.navigation3.ui)
                 implementation(libs.jetbrains.lifecycle.viewmodelNavigation3)
@@ -98,9 +111,14 @@ kotlin {
 
         androidMain {
             dependencies {
-                // Add Android-specific dependencies here. Note that this source set depends on
-                // commonMain by default and will correctly pull the Android artifacts of any KMP
-                // dependencies declared in commonMain.
+                implementation(libs.compose.uiToolingPreview)
+                implementation(libs.androidx.activity.compose)
+
+                implementation(project.dependencies.platform(libs.google.firebase.bom))
+                implementation(libs.google.firebase.database)
+                implementation(libs.google.firebase.auth)
+
+                implementation(libs.koin.android)
             }
         }
 

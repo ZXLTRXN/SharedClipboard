@@ -1,4 +1,4 @@
-package com.example.sharedclipboard.clipboard_ui.state
+package com.example.feature.clipboard.ui.state
 
 sealed interface ClipboardState {
     data object Loading : ClipboardState
