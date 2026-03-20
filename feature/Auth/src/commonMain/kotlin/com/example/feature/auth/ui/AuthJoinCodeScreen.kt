@@ -51,7 +51,8 @@ fun AuthJoinCodeScreen(
     onGoToMain: (() -> Unit)? = null,
 ) {
     Box(
-        modifier.fillMaxSize().padding(16.dp),
+        modifier
+            .padding(vertical = 24.dp, horizontal = 16.dp),
     ) {
 
         onGoToMain?.let {
