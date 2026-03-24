@@ -5,6 +5,9 @@ plugins {
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.androidLint)
 
+    alias(libs.plugins.composeMultiplatform)
+    alias(libs.plugins.composeCompiler)
+
     alias(libs.plugins.kotlinSerialization)
 }
 
@@ -67,6 +70,10 @@ kotlin {
                 implementation(libs.jetbrains.lifecycle.viewmodelNavigation3)
 
                 implementation(libs.compose.components.resources)
+
+                implementation(libs.compose.runtime)
+                implementation(libs.compose.foundation)
+                implementation(libs.compose.material3)
             }
         }
 

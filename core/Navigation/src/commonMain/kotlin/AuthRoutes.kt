@@ -1,12 +1,10 @@
-package com.example.feature.auth.ui
-
 import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 
 @Serializable
 sealed interface AuthRoutes: NavKey {
     @Serializable
-    data object ShowJoinCode: AuthRoutes
+    data object ShowJoinCode: AuthRoutes, TopLevelRoute
 
     @Serializable
     data object JoinExistingRoom: AuthRoutes
