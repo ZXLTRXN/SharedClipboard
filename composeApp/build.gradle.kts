@@ -73,6 +73,7 @@ kotlin {
             implementation(libs.jetbrains.lifecycle.viewmodelNavigation3)
 
             implementation(project(":core:UI"))
+            implementation(project(":core:Navigation"))
             implementation(project(":core:DataUtils"))
             implementation(project(":feature:Clipboard"))
             implementation(project(":feature:Auth"))

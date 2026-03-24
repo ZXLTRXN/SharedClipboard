@@ -88,6 +88,7 @@ kotlin {
                 implementation(libs.gitlive.firebase.auth)
 
                 implementation(project(":core:UI"))
+                implementation(project(":core:Navigation"))
                 implementation(project(":FirebaseApi"))
             }
         }
