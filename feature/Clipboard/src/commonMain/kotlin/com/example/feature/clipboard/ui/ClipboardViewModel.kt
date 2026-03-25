@@ -6,6 +6,9 @@ import com.example.feature.clipboard.domain.LocalClipboardProvider
 import com.example.feature.clipboard.ui.state.ClipboardIntent
 import com.example.feature.clipboard.ui.state.ClipboardSideEffect
 import com.example.feature.clipboard.ui.state.ClipboardState
+import com.example.firebaseapi.domain.AuthRepository
+import com.example.firebaseapi.domain.ClipModel
+import com.example.firebaseapi.domain.ClipboardRepository
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
@@ -23,8 +26,6 @@ import sharedclipboard.feature.clipboard.generated.resources.Res
 import sharedclipboard.feature.clipboard.generated.resources.copied
 import sharedclipboard.feature.clipboard.generated.resources.errorRelogin
 import sharedclipboard.feature.clipboard.generated.resources.failedOpenURL
-import com.example.firebaseapi.domain.AuthRepository
-import com.example.firebaseapi.domain.ClipboardRepository
 
 class ClipboardViewModel(
     private val repository: ClipboardRepository,
@@ -34,17 +35,20 @@ class ClipboardViewModel(
 
     private val stateCombination: Flow<ClipboardState> = combine(
         repository.observeMessages()
-            .onStart { emit("") },
+            .onStart { emit(ClipModel.EMPTY) },
         localClipboardProvider.currentClipboard
             .onStart { emit("") },
     ) { remoteValue, localValue ->
         Napier.d(
-            "producing state combination: remoteValue: $remoteValue, localValue: $localValue",
+            "producing state combination: " +
+                    "\nremoteValue: ${remoteValue.text.take(15)}..., " +
+                    "\nlocalValue: ${localValue.take(15)}...",
             tag = this::class.simpleName
         )
         ClipboardState.Success(
-            remoteValue,
-            localValue
+            remoteValue.text,
+            localValue,
+            remoteValue == ClipModel.EMPTY
         )
     }.catch<ClipboardState> { ex ->
         Napier.e(

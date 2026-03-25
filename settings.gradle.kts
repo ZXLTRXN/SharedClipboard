@@ -41,3 +41,4 @@ include("feature:Clipboard")
 
 include(":FirebaseImpl")
 include(":core:DataUtils")
+include(":core:Cache")

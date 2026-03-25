@@ -1,5 +1,6 @@
 package com.example.sharedclipboard.di
 
+import com.example.core.cache.cacheModule
 import com.example.feature.auth.authModule
 import com.example.feature.clipboard.clipboardModule
 import com.example.firebaseimpl.di.firebaseModule
@@ -12,6 +13,7 @@ fun initKoin(config: KoinAppDeclaration? = null): KoinApplication {
     return startKoin {
         includes(config)
         modules(
+            cacheModule,
             firebaseModule,
             authModule,
             clipboardModule,

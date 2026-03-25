@@ -75,6 +75,7 @@ kotlin {
             implementation(project(":core:UI"))
             implementation(project(":core:Navigation"))
             implementation(project(":core:DataUtils"))
+            implementation(project(":core:Cache"))
             implementation(project(":feature:Clipboard"))
             implementation(project(":feature:Auth"))
             implementation(project(":FirebaseApi"))

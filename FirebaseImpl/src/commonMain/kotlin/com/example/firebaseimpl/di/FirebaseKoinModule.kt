@@ -33,6 +33,7 @@ val firebaseModule = module {
             get(),
             get(),
             get(),
+            get(),
             get(IoQualifier)
         )
     } binds arrayOf(

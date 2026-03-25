@@ -1,0 +1,31 @@
+CREATE TABLE IF NOT EXISTS clipboard(
+  timestamp INTEGER NOT NULL PRIMARY KEY,
+  text TEXT NOT NULL,
+  sender_id TEXT NOT NULL,
+  sender_name TEXT NOT NULL
+);
+
+
+insertClip:
+INSERT OR IGNORE INTO clipboard(timestamp, text, sender_id, sender_name) VALUES (?,?, ?, ?);
+
+CREATE INDEX IF NOT EXISTS clipboard_timestamp_idx ON clipboard(timestamp DESC);
+
+selectLatestClip:
+SELECT * FROM clipboard ORDER BY timestamp DESC LIMIT 1;
+
+selectAllClips:
+SELECT * FROM clipboard ORDER BY timestamp DESC;
+
+searchByText:
+SELECT * FROM clipboard
+WHERE text LIKE ('%' || :query || '%')
+ORDER BY timestamp DESC;
+
+
+deleteAllClips:
+DELETE FROM clipboard;
+
+deleteByTimestamp:
+DELETE FROM clipboard
+WHERE timestamp = :timestamp;

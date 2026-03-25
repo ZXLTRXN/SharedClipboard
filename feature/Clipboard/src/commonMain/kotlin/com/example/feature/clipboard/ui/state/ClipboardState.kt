@@ -6,6 +6,7 @@ sealed interface ClipboardState {
     data class Success(
         val remoteValue: String,
         val localValue: String,
+        val remoteLoading: Boolean
     ) : ClipboardState
 
     data object Error : ClipboardState

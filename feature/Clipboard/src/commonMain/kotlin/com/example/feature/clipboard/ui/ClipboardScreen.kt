@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -29,10 +31,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.core.ui.composables.LoadingScreen
-import com.example.core.ui.composables.LocalSnackbarHostState
 import com.example.core.ui.composables.ErrorScreen
 import com.example.core.ui.composables.FlashTextWithDetection
+import com.example.core.ui.composables.LoadingScreen
+import com.example.core.ui.composables.LocalSnackbarHostState
 import com.example.core.ui.composables.ReloadableTextField
 import com.example.feature.clipboard.ui.state.ClipboardIntent
 import com.example.feature.clipboard.ui.state.ClipboardSideEffect
@@ -122,6 +124,7 @@ fun ClipboardScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun ClipboardSuccessStateScreen(
     state: ClipboardState.Success,
@@ -177,35 +180,42 @@ fun ClipboardSuccessStateScreen(
                 )
         ) {
 
-            if (state.remoteValue.isBlank()) {
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    text = stringResource(Res.string.emptyBuffer),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.error
-                )
-            } else {
-                FlashTextWithDetection(
-                    state.remoteValue,
-                    modifier = Modifier.fillMaxWidth(),
-                    onLongPress = {
-                        clipboard.setText(AnnotatedString(state.remoteValue))
-                        onIntent(
-                            ClipboardIntent.Copied
-                        )
-                    },
-                    onDoubleTap = {
-                        try {
-                            uriHandler.openUri(state.remoteValue)
-                        } catch (ex: Exception) {
-                            onIntent(
-                                ClipboardIntent.FailedToOpenUri
-                            )
-                        }
-                    })
-            }
+            when {
+                state.remoteLoading -> {
+                    LoadingIndicator(modifier = Modifier.fillMaxWidth())
+                }
 
+                state.remoteValue.isBlank() -> {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center,
+                        text = stringResource(Res.string.emptyBuffer),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+
+                else -> {
+                    FlashTextWithDetection(
+                        state.remoteValue,
+                        modifier = Modifier.fillMaxWidth(),
+                        onLongPress = {
+                            clipboard.setText(AnnotatedString(state.remoteValue))
+                            onIntent(
+                                ClipboardIntent.Copied
+                            )
+                        },
+                        onDoubleTap = {
+                            try {
+                                uriHandler.openUri(state.remoteValue)
+                            } catch (ex: Exception) {
+                                onIntent(
+                                    ClipboardIntent.FailedToOpenUri
+                                )
+                            }
+                        })
+                }
+            }
 
             Spacer(modifier = Modifier.height(30.dp))
             ReloadableTextField(
@@ -236,7 +246,8 @@ fun ClipboardScreenPreview() {
         ClipboardScreen(
             state = ClipboardState.Success(
                 localValue = "local",
-                remoteValue = "remote"
+                remoteValue = "remote",
+                remoteLoading = false
             ),
             onIntent = {}
         )

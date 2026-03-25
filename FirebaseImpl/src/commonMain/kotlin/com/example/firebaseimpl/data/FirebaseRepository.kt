@@ -1,7 +1,14 @@
 package com.example.firebaseimpl.data
 
+import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToOneNotNull
+import com.example.core.cache.db.ClipboardQueries
+import com.example.firebaseapi.domain.AuthRepository
+import com.example.firebaseapi.domain.ClipModel
+import com.example.firebaseapi.domain.ClipboardRepository
 import com.example.firebaseimpl.data.models.ClipboardDataDto
 import com.example.firebaseimpl.data.models.InviteDto
+import com.example.firebaseimpl.platform
 import dev.gitlive.firebase.auth.FirebaseAuth
 import dev.gitlive.firebase.auth.FirebaseUser
 import dev.gitlive.firebase.database.DatabaseReference
@@ -9,22 +16,22 @@ import dev.gitlive.firebase.database.FirebaseDatabase
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withContext
 import kotlin.random.Random
 import kotlin.random.nextULong
 import kotlin.time.Clock
-import com.example.firebaseapi.domain.ClipboardRepository
-import com.example.firebaseapi.domain.AuthRepository
-import com.example.firebaseimpl.platform
 
 internal class FirebaseRepository(
     database: FirebaseDatabase,
     private val auth: FirebaseAuth,
     private val settings: RoomSettings,
+    private val clipboardCache: ClipboardQueries,
     private val ioDispatcher: CoroutineDispatcher
 ) : ClipboardRepository, AuthRepository {
 
@@ -82,6 +89,9 @@ internal class FirebaseRepository(
 
                     invitesRef.child(code).removeValue()
                     return@withContext true
+                } else {
+                    invitesRef.child(code).removeValue() // expiredException
+                    return@withContext false
                 }
             }
         } catch (e: Exception) {
@@ -115,15 +125,34 @@ internal class FirebaseRepository(
     }
 
     /**
-     * @throws IllegalStateException in flow if no room saved
+     * @throws IllegalStateException IN FLOW if no room saved
      */
-    override fun observeMessages(): Flow<String> {
-        val roomId = settings.roomId ?: return flow {
-            throw IllegalStateException("No saved roomId")
-        }
+    override fun observeMessages(): Flow<ClipModel> = channelFlow {
+        val roomId = settings.roomId ?: throw IllegalStateException("No saved roomId")
 
-        return getLastClipSnapshot(roomId).valueEvents.mapNotNull { snapshot ->
-            snapshot.value<ClipboardDataDto?>()?.text
-        }.flowOn(ioDispatcher)
-    }
+        getLastClipSnapshot(roomId).valueEvents
+            .mapNotNull { it.value<ClipboardDataDto?>() }
+            .onEach { dto ->
+                clipboardCache.insertClip(
+                    timestamp = dto.timestamp,
+                    text = dto.text,
+                    sender_id = dto.senderId,
+                    sender_name = dto.senderName
+                )
+            }
+            .launchIn(this@channelFlow)
+
+        clipboardCache.selectLatestClip()
+            .asFlow()
+            .mapToOneNotNull(ioDispatcher)
+            .collect { entity ->
+                send(
+                    ClipModel(
+                        timestamp = entity.timestamp,
+                        text = entity.text,
+                        senderName = entity.sender_name
+                    )
+                )
+            }
+    }.flowOn(ioDispatcher)
 }

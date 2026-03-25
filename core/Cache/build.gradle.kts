@@ -5,19 +5,28 @@ plugins {
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.androidLint)
 
-    alias(libs.plugins.gms)
-    alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.sqldelight)
 }
 
 kotlin {
+
+    sqldelight {
+        databases {
+            register("Database") {
+                packageName.set("com.example.core.cache.db")
+            }
+        }
+    }
+
     jvm {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
         }
     }
 
+
     androidLibrary {
-        namespace = "com.example.firebaseimpl"
+        namespace = "com.example.core.cache"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
 
@@ -35,8 +44,7 @@ kotlin {
         }
     }
 
-
-    val xcfName = "FirebaseImplKit"
+    val xcfName = "CacheKit"
 
     iosX64 {
         binaries.framework {
@@ -56,28 +64,14 @@ kotlin {
         }
     }
 
+
     sourceSets {
         commonMain {
             dependencies {
                 implementation(libs.kotlin.stdlib)
-                implementation(libs.kotlinx.coroutines.core)
-
-                implementation(libs.gitlive.firebase.auth)
-                implementation(libs.gitlive.firebase.database)
-
 
                 implementation(project.dependencies.platform(libs.koin.bom))
                 implementation(libs.koin.core)
-
-                implementation(libs.napier)
-
-                implementation(libs.multiplatform.settings.no.arg)
-
-                implementation(libs.sqldelight.coroutines.extensions)
-
-                implementation(project(":FirebaseApi"))
-                implementation(project(":core:DataUtils"))
-                implementation(project(":core:Cache"))
 
             }
         }
@@ -88,11 +82,21 @@ kotlin {
             }
         }
 
+        jvmMain {
+            dependencies {
+                implementation(libs.sqldelight.jvm)
+            }
+        }
+
         androidMain {
             dependencies {
-                implementation(project.dependencies.platform(libs.google.firebase.bom))
-                implementation(libs.google.firebase.database)
-                implementation(libs.google.firebase.auth)
+                implementation(libs.sqldelight.android)
+            }
+        }
+
+        iosMain {
+            dependencies {
+                implementation(libs.sqldelight.native)
             }
         }
 
@@ -101,11 +105,6 @@ kotlin {
                 implementation(libs.androidx.runner)
                 implementation(libs.androidx.core)
                 implementation(libs.androidx.testExt.junit)
-            }
-        }
-
-        iosMain {
-            dependencies {
             }
         }
     }

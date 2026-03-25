@@ -11,5 +11,5 @@ interface ClipboardRepository {
     /**
      * @throws IllegalStateException in flow if no room saved
      */
-    fun observeMessages(): Flow<String>
+    fun observeMessages(): Flow<ClipModel>
 }
