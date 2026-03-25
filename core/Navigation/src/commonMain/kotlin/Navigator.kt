@@ -1,78 +1,92 @@
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSerializable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.navigation3.runtime.NavKey
 import androidx.savedstate.compose.serialization.serializers.SnapshotStateListSerializer
 import androidx.savedstate.serialization.SavedStateConfiguration
+import io.github.aakira.napier.Napier
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.PolymorphicSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import routes.AuthRoutes
 
 class Navigator(
-    initialStack: List<NavKey>,
+    initialStack: List<NavKey>
 ) {
-    constructor(startDestination: NavKey) : this(listOf(startDestination))
+//    var isLoggedIn: (() -> Boolean)? = null
+//
+//    val backStack: SnapshotStateList<NavKey> by lazy(LazyThreadSafetyMode.NONE) {
+//        val isLoggedIn = isLoggedIn?.invoke()
+//        if (isLoggedIn == null) {
+//            Napier.e(
+//                "isLoggedIn is null",
+//                tag = this::class.simpleName
+//            )
+//        }
+//
+//        return@lazy if (initialStack.any { it is NeedAuth && isLoggedIn != true }) {
+//            mutableStateListOf(AuthRoutes.SelectMethod)
+//        } else {
+//            mutableStateListOf(*initialStack.toTypedArray())
+//        }
+//    }
 
     val backStack: SnapshotStateList<NavKey> = mutableStateListOf(*initialStack.toTypedArray())
 
     fun goTo(route: NavKey) {
         if (backStack.lastOrNull() == route) return
         backStack.add(route)
+//        addWithAuthCheck(route) fixme
+
     }
 
     fun clearAndGoTo(route: NavKey) {
         backStack.removeLastOrNull()
         backStack.add(route)
+//        addWithAuthCheck(route) fixme
     }
+
+//    private fun addWithAuthCheck(route: NavKey) {
+//        if (route is NeedAuth && isLoggedIn?.invoke() != true) {
+//            backStack.add(AuthRoutes.SelectMethod)
+//        } else {
+//            backStack.add(route)
+//        }
+//    }
 
     fun goBack() {
         backStack.removeLastOrNull()
     }
 }
 
-//@Composable
-//public fun rememberNavigator(
-//    configuration: SavedStateConfiguration,
-//    vararg elements: NavKey,
-//): Navigator {
-//
-//    val stack = rememberSerializable(
-//        configuration = configuration,
-//        serializer = NavBackStackSerializer(PolymorphicSerializer(NavKey::class)),
-//    ) {
-//        NavBackStack(*elements)
-//    }
-//    return Navigator(stack)
-//}
-
 @Composable
-public fun rememberNavigator(
+fun rememberNavigator(
     configuration: SavedStateConfiguration,
     vararg initialStack: NavKey,
 ): Navigator {
-    // Проверка на наличие модуля сериализации, как в вашем примере
     require(configuration.serializersModule != SavedStateConfiguration.DEFAULT.serializersModule) {
         "You must pass a `SavedStateConfiguration.serializersModule` configured to handle " +
                 "`NavKey` open polymorphism. Define it with: `polymorphic(NavKey::class) { ... }`"
     }
-
-    return rememberSerializable(
+    val navigator = rememberSerializable(
         configuration = configuration,
         serializer = NavigatorSerializer(PolymorphicSerializer(NavKey::class)),
     ) {
         Navigator(initialStack.toList())
     }
+    return navigator
 }
 
-public class NavigatorSerializer<T : NavKey>(
-    private val elementSerializer: KSerializer<T>
+class NavigatorSerializer<T : NavKey>(
+    elementSerializer: KSerializer<T>
 ) : KSerializer<Navigator> {
 
-    // Используем тот же SnapshotStateListSerializer для управления списком NavKey
     private val delegate = SnapshotStateListSerializer(elementSerializer)
 
     @OptIn(ExperimentalSerializationApi::class)
@@ -86,7 +100,6 @@ public class NavigatorSerializer<T : NavKey>(
         encoder: Encoder,
         value: Navigator
     ) {
-        // Сериализуем внутреннее состояние backStack (SnapshotStateList)
         encoder.encodeSerializableValue(
             delegate,
             value.backStack as SnapshotStateList<T>
@@ -94,7 +107,6 @@ public class NavigatorSerializer<T : NavKey>(
     }
 
     override fun deserialize(decoder: Decoder): Navigator {
-        // Десериализуем список и передаем его в основной конструктор
         val restoredStack = decoder.decodeSerializableValue(delegate)
         return Navigator(restoredStack)
     }

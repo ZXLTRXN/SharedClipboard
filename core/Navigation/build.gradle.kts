@@ -74,6 +74,10 @@ kotlin {
                 implementation(libs.compose.runtime)
                 implementation(libs.compose.foundation)
                 implementation(libs.compose.material3)
+
+                implementation(libs.kotlinx.serialization.json)
+
+                implementation(libs.napier)
             }
         }
 

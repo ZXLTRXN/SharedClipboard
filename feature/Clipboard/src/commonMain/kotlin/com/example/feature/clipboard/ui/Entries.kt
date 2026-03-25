@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
+import routes.AuthRoutes
+import routes.ClipboardRoutes
 
 fun EntryProviderScope<NavKey>.clipboardFeature(
     navigator: Navigator,

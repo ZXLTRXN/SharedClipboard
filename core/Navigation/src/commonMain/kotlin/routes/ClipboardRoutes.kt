@@ -1,8 +1,12 @@
+package routes
+
+import NeedAuth
+import TopLevelRoute
 import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 
 @Serializable
 sealed interface ClipboardRoutes: NavKey {
     @Serializable
-    data object Clipboard: ClipboardRoutes, TopLevelRoute
+    data object Clipboard: ClipboardRoutes, TopLevelRoute, NeedAuth
 }
