@@ -1,4 +1,4 @@
-package com.example.sharedclipboard.data.models
+package com.example.firebaseimpl.data.models
 
 import kotlinx.serialization.Serializable
 

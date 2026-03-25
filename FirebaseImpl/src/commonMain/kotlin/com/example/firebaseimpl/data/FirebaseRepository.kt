@@ -1,7 +1,7 @@
 package com.example.firebaseimpl.data
 
-import com.example.sharedclipboard.data.models.ClipboardDataDto
-import com.example.sharedclipboard.data.models.InviteDto
+import com.example.firebaseimpl.data.models.ClipboardDataDto
+import com.example.firebaseimpl.data.models.InviteDto
 import dev.gitlive.firebase.auth.FirebaseAuth
 import dev.gitlive.firebase.auth.FirebaseUser
 import dev.gitlive.firebase.database.DatabaseReference
