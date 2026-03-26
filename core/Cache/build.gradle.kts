@@ -16,6 +16,7 @@ kotlin {
                 packageName.set("com.example.core.cache.db")
             }
         }
+        linkSqlite.set(true)
     }
 
     jvm {
