@@ -7,7 +7,9 @@ import dev.gitlive.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.mapNotNull
+import io.mockative.Mockable
 
+@Mockable
 internal interface FirebaseDataSource {
     suspend fun saveClip(
         roomId: String,

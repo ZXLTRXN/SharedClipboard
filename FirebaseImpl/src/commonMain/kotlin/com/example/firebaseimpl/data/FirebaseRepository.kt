@@ -2,6 +2,7 @@ package com.example.firebaseimpl.data
 
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToOneNotNull
+import app.cash.sqldelight.db.SqlDriver
 import com.example.core.cache.db.ClipboardQueries
 import com.example.firebaseapi.domain.AuthRepository
 import com.example.firebaseapi.domain.ClipModel
@@ -14,6 +15,7 @@ import com.example.firebaseimpl.data.models.InviteDto
 import com.example.firebaseimpl.platform
 import dev.gitlive.firebase.auth.FirebaseAuth
 import dev.gitlive.firebase.auth.FirebaseUser
+import io.mockative.Mockable
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
@@ -25,9 +27,11 @@ import kotlin.random.Random
 import kotlin.random.nextULong
 import kotlin.time.Clock
 
+
+@Mockable(Clock::class)
 internal class FirebaseRepository(
     private val dataSource: FirebaseDataSource,
-    private val auth: FirebaseAuth,
+    private val auth: FirebaseAuthAdapter,
     private val settings: RoomSettings,
     private val clipboardCache: ClipboardQueries,
     private val ioDispatcher: CoroutineDispatcher,

@@ -1,7 +1,9 @@
 package com.example.firebaseimpl.data
 
 import com.russhwolf.settings.Settings
+import io.mockative.Mockable
 
+@Mockable(RoomSettings::class, Settings::class)
 internal class RoomSettings(private val settings: Settings) {
     var roomId: String?
         get() = settings.getStringOrNull(ROOM_ID_KEY)

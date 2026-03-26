@@ -7,6 +7,8 @@ plugins {
 
     alias(libs.plugins.gms)
     alias(libs.plugins.kotlinSerialization)
+
+    alias(libs.plugins.mockative)
 }
 
 kotlin {
@@ -85,14 +87,25 @@ kotlin {
         commonTest {
             dependencies {
                 implementation(libs.kotlin.test)
+                implementation(libs.kotlinx.coroutines.test)
+                implementation(libs.koin.test)
+                implementation(libs.turbine)
+                implementation(libs.mockative)
             }
         }
+
 
         androidMain {
             dependencies {
                 implementation(project.dependencies.platform(libs.google.firebase.bom))
                 implementation(libs.google.firebase.database)
                 implementation(libs.google.firebase.auth)
+            }
+        }
+
+        getByName("androidHostTest") {
+            dependencies {
+                implementation(libs.sqldelight.jvm)
             }
         }
 

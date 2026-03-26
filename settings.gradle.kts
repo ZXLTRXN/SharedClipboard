@@ -31,14 +31,14 @@ dependencyResolutionManagement {
 plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
+include("core:UI")
+include("core:Navigation")
+include(":core:DataUtils")
+include(":core:Cache")
 
 include(":composeApp")
 include(":FirebaseApi")
-include("core:UI")
-include("core:Navigation")
 include("feature:Auth")
 include("feature:Clipboard")
-
 include(":FirebaseImpl")
-include(":core:DataUtils")
-include(":core:Cache")
+

@@ -3,6 +3,8 @@ package com.example.firebaseimpl.di
 import com.example.datautils.IoQualifier
 import com.example.firebaseapi.domain.AuthRepository
 import com.example.firebaseapi.domain.ClipboardRepository
+import com.example.firebaseimpl.data.FirebaseAuthAdapter
+import com.example.firebaseimpl.data.FirebaseAuthAdapterImpl
 import com.example.firebaseimpl.data.FirebaseDataSource
 import com.example.firebaseimpl.data.FirebaseDataSourceImpl
 import com.example.firebaseimpl.data.FirebaseRepository
@@ -34,6 +36,10 @@ val firebaseModule = module {
 
     single<FirebaseAuth> {
         Firebase.auth
+    }
+
+    single<FirebaseAuthAdapter> {
+        FirebaseAuthAdapterImpl(get())
     }
 
     factory<Clock> {
