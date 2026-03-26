@@ -3,6 +3,8 @@ package com.example.firebaseimpl.di
 import com.example.datautils.IoQualifier
 import com.example.firebaseapi.domain.AuthRepository
 import com.example.firebaseapi.domain.ClipboardRepository
+import com.example.firebaseimpl.data.FirebaseDataSource
+import com.example.firebaseimpl.data.FirebaseDataSourceImpl
 import com.example.firebaseimpl.data.FirebaseRepository
 import com.example.firebaseimpl.data.RoomSettings
 import com.russhwolf.settings.Settings
@@ -13,6 +15,7 @@ import dev.gitlive.firebase.database.FirebaseDatabase
 import dev.gitlive.firebase.database.database
 import org.koin.dsl.binds
 import org.koin.dsl.module
+import kotlin.time.Clock
 
 val firebaseModule = module {
     single<Settings> { Settings() }
@@ -24,8 +27,17 @@ val firebaseModule = module {
                     ".firebasedatabase.app/"
         )
     }
+
+    single<FirebaseDataSource> {
+        FirebaseDataSourceImpl(get())
+    }
+
     single<FirebaseAuth> {
         Firebase.auth
+    }
+
+    factory<Clock> {
+        Clock.System
     }
 
     single {
@@ -34,7 +46,8 @@ val firebaseModule = module {
             get(),
             get(),
             get(),
-            get(IoQualifier)
+            get(IoQualifier),
+            get()
         )
     } binds arrayOf(
         ClipboardRepository::class,

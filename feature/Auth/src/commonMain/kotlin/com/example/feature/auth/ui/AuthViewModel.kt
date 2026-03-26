@@ -5,10 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.firebaseapi.domain.AuthRepository
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.StringResource
-import com.example.firebaseapi.domain.AuthRepository
 
 
 class AuthViewModel(
@@ -23,12 +23,15 @@ class AuthViewModel(
 
     fun requestJoiningTheRoom(code: String) {
         viewModelScope.launch {
-            val isSuccess = repository.joinRoom(code)
-            if (!isSuccess) { // fixme
-                state = AuthState.Error(null)
-            } else {
-                sideEffect.trySend(AuthSideEffect.GoToClipboardScreen)
-            }
+            val result = repository.joinRoom(code)
+            result.fold(
+                onSuccess = {
+                    sideEffect.trySend(AuthSideEffect.GoToClipboardScreen)
+                },
+                onFailure = {
+                    state = AuthState.Error(null)
+                }
+            )
         }
     }
 }

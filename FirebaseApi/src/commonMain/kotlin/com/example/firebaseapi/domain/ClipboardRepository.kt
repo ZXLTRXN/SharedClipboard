@@ -4,12 +4,12 @@ import kotlinx.coroutines.flow.Flow
 
 interface ClipboardRepository {
     /**
-     * @throws IllegalStateException if no room saved
+     * @throws NoAttachedRoomException if no room saved
      */
     suspend fun saveMessage(text: String)
 
     /**
-     * @throws IllegalStateException in flow if no room saved
+     * @throws NoAttachedRoomException in flow if no room saved
      */
     fun observeMessages(): Flow<ClipModel>
 }
