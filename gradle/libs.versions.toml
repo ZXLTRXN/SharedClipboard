@@ -32,6 +32,8 @@ sqldelight = "2.3.2"
 mockative = "3.2.3"
 turbine = "1.2.1"
 
+skie = "0.10.10"
+
 
 [libraries]
 
@@ -106,3 +108,4 @@ androidKotlinMultiplatformLibrary = { id = "com.android.kotlin.multiplatform.lib
 androidLint = { id = "com.android.lint", version.ref = "agp" }
 sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
 mockative = { id = "io.mockative", version.ref = "mockative" }
+skie = { id = "co.touchlab.skie", version.ref = "skie" }

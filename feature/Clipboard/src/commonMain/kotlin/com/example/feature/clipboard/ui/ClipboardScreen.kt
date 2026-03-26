@@ -62,7 +62,7 @@ fun ClipboardScreenStateful(
     val snackbarHostState = LocalSnackbarHostState.current
 
     LaunchedEffect(viewModel.sideEffect) {
-        viewModel.sideEffect.receiveAsFlow().collect { effect ->
+        viewModel.sideEffect.collect { effect ->
             when (effect) {
                 is ClipboardSideEffect.ShowSnackbar -> {
                     snackbarHostState.showSnackbar(

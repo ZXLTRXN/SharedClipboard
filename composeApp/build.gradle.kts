@@ -1,3 +1,4 @@
+import co.touchlab.skie.configuration.SealedInterop
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -9,6 +10,8 @@ plugins {
     alias(libs.plugins.composeHotReload)
     alias(libs.plugins.gms)
     alias(libs.plugins.kotlinSerialization)
+
+    alias(libs.plugins.skie)
 
 }
 
@@ -26,6 +29,8 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+
+            export(project(":feature:Clipboard"))
         }
     }
     
@@ -76,7 +81,7 @@ kotlin {
             implementation(project(":core:Navigation"))
             implementation(project(":core:DataUtils"))
             implementation(project(":core:Cache"))
-            implementation(project(":feature:Clipboard"))
+            api(project(":feature:Clipboard"))
             implementation(project(":feature:Auth"))
             implementation(project(":FirebaseApi"))
             implementation(project(":FirebaseImpl"))

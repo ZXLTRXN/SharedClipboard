@@ -10,9 +10,12 @@ struct iOSApp: App {
     }
 
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    
+    let helper = KoinHelper()
 
     var body: some Scene {
         WindowGroup {
+//            ClipboardView(viewModel: helper.getClipboardViewModel())
             ContentView()
         }
     }

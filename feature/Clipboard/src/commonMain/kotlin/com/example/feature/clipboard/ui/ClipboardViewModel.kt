@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.launch
@@ -79,8 +80,9 @@ class ClipboardViewModel(
         ClipboardState.Loading
     )
 
-    var sideEffect = Channel<ClipboardSideEffect>(Channel.BUFFERED)
-        private set
+    private var _sideEffect = Channel<ClipboardSideEffect>(Channel.BUFFERED)
+    val sideEffect = _sideEffect.receiveAsFlow()
+
 
     fun process(intent: ClipboardIntent) {
         when (intent) {
@@ -88,11 +90,11 @@ class ClipboardViewModel(
                 sendLocal(intent.localClipboard)
             }
 
-            ClipboardIntent.Copied -> sideEffect.trySend(
+            ClipboardIntent.Copied -> _sideEffect.trySend(
                 ClipboardSideEffect.ShowSnackbar(Res.string.copied)
             )
 
-            ClipboardIntent.FailedToOpenUri -> sideEffect.trySend(
+            ClipboardIntent.FailedToOpenUri -> _sideEffect.trySend(
                 ClipboardSideEffect.ShowSnackbar(Res.string.failedOpenURL)
             )
 
@@ -112,8 +114,8 @@ class ClipboardViewModel(
                     ex,
                     this::class.simpleName
                 )
-                sideEffect.trySend(ClipboardSideEffect.ShowSnackbar(Res.string.errorRelogin))
-                sideEffect.trySend(ClipboardSideEffect.GoToAuth)
+                _sideEffect.trySend(ClipboardSideEffect.ShowSnackbar(Res.string.errorRelogin))
+                _sideEffect.trySend(ClipboardSideEffect.GoToAuth)
             }
         }
     }
