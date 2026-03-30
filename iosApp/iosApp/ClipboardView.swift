@@ -9,34 +9,67 @@ import SwiftUI
 import ComposeApp
 
 struct ClipboardView: View {
-    @StateObject private var observableModel: ObservableClipboardViewModel
+    private let viewModel: ClipboardViewModel
+    
+    @StateObject private var state: StateCollector<ClipboardState>
+    @State private var alertMessage: String?
+    @State private var isShowingAlert = false
     
     init(viewModel: ClipboardViewModel) {
-        _observableModel = StateObject(wrappedValue: ObservableClipboardViewModel(viewModel: viewModel))
+        self.viewModel =  viewModel
+        _state = StateObject(wrappedValue: StateCollector(
+                flow: viewModel.state,
+                initial: viewModel.state.value
+            ))
     }
 
     var body: some View {
         VStack(spacing: 20) {
-
-            if let state = observableModel.state as? ClipboardStateSuccess {
-                Text("Remote: \(state.remoteValue)")
+            switch onEnum(of: state.value) {
+            case .success(let success):
+                Text("Remote: \(success.remoteValue)")
                     .font(.headline)
                 
-                Text("Local: \(state.localValue)")
+                Text("Local: \(success.localValue)")
                     .foregroundColor(.secondary)
                 
                 Button("Send Local") {
-                    observableModel.viewModel.process(intent: ClipboardIntentSendLocal(localClipboard: "New Clip"))
+                    viewModel.process(
+                        intent: ClipboardIntentSendLocal(localClipboard: success.localValue)
+                    )
                 }
-            } else if observableModel.state is ClipboardStateLoading {
-                ProgressView("Loading...")
-            } else {
-                Text("Something went wrong")
+                Button("call side effect") {
+                    viewModel.process(
+                        intent: ClipboardIntentCopied()
+                    )
+                }
+            case .loading:
+                ProgressView()
+            case .error:
+                Text("Error")
+            }
+            
+        }.alert("Уведомление", isPresented: $isShowingAlert) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(alertMessage ?? "")
+        }.task {
+            for await effect in viewModel.sideEffect {
+                handleSideEffect(effect)
             }
         }
-        .padding()
-        .task {
-            await observableModel.activate()
+    }
+    
+    private func handleSideEffect(_ effect: ClipboardSideEffect) {
+        switch effect {
+        case let snack as ClipboardSideEffectShowSnackbar:
+            let message = StringResourceKt.getStringFromRes(resource: snack.message)
+            alertMessage = message
+            isShowingAlert = true
+            print(message)
+        default:
+            print("def sideEffect")
         }
     }
+    
 }
