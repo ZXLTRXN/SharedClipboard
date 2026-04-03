@@ -1,18 +1,22 @@
 CREATE TABLE IF NOT EXISTS clipboard(
   timestamp INTEGER NOT NULL PRIMARY KEY,
   text TEXT NOT NULL,
+  room_id TEXT NOT NULL,
   sender_id TEXT NOT NULL,
   sender_name TEXT NOT NULL
 );
 
 
 insertClip:
-INSERT OR IGNORE INTO clipboard(timestamp, text, sender_id, sender_name) VALUES (?,?, ?, ?);
+INSERT OR IGNORE INTO clipboard(timestamp, text, room_id, sender_id, sender_name) VALUES (?, ?,?, ?, ?);
 
 CREATE INDEX IF NOT EXISTS clipboard_timestamp_idx ON clipboard(timestamp DESC);
+CREATE INDEX IF NOT EXISTS idx_clipboard_room_id ON clipboard(room_id);
 
 selectLatestClip:
-SELECT * FROM clipboard ORDER BY timestamp DESC LIMIT 1;
+SELECT * FROM clipboard
+WHERE room_id = ?
+ORDER BY timestamp DESC LIMIT 1;
 
 selectAllClips:
 SELECT * FROM clipboard ORDER BY timestamp DESC;

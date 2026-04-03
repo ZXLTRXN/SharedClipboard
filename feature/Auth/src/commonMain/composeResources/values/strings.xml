@@ -6,5 +6,9 @@
     <string name="connect">Connect</string>
     <string name="clipboard">Clipboard</string>
     <string name="createRoom">Create room</string>
+    <string name="leaveRoom">Leave room</string>
     <string name="joinRoom">Join room</string>
+    <string name="enterCode">Enter code from existing device</string>
+    <string name="codePlaceholder">123456</string>
+    <string name="roomCode">Join room</string>
 </resources>

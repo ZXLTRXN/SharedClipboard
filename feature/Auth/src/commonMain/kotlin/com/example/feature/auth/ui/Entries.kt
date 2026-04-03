@@ -14,6 +14,7 @@ import routes.ClipboardRoutes
 @OptIn(ExperimentalMaterial3Api::class)
 fun EntryProviderScope<NavKey>.authFeature(
     navigator: Navigator,
+    onLogout: () -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
     createRoom: () -> Unit,
@@ -21,6 +22,10 @@ fun EntryProviderScope<NavKey>.authFeature(
 
     entry<AuthRoutes.SelectMethod> {
         AuthSelectorScreen(
+            isLoggedIn = navigator.isLoggedIn,
+            onLeaveRoom = {
+                onLogout()
+            },
             onCreateRoom = {
                 createRoom()
                 navigator.clearAndGoTo(ClipboardRoutes.Clipboard)

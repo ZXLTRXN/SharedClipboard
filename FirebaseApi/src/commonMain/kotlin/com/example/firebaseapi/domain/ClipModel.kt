@@ -6,8 +6,14 @@ data class ClipModel(
     val senderName: String
 ) {
     companion object {
-        val EMPTY = ClipModel(
-            timestamp = 0L,
+        val LOADING = ClipModel(
+            timestamp = -1L,
+            text = "",
+            senderName = ""
+        )
+
+        val TIMEOUT = ClipModel(
+            timestamp = -2L,
             text = "",
             senderName = ""
         )

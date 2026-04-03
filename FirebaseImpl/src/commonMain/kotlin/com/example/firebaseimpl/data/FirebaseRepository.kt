@@ -15,6 +15,8 @@ import com.example.firebaseimpl.data.models.InviteDto
 import com.example.firebaseimpl.platform
 import dev.gitlive.firebase.auth.FirebaseAuth
 import dev.gitlive.firebase.auth.FirebaseUser
+import dev.gitlive.firebase.database.DatabaseException
+import io.github.aakira.napier.Napier
 import io.mockative.Mockable
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -42,10 +44,16 @@ internal class FirebaseRepository(
         get() = settings.roomId != null
 
     override suspend fun ensureAuth(): FirebaseUser? {
-        if (auth.currentUser == null) {
-            auth.signInAnonymously()
+        return try {
+            if (auth.currentUser == null) {
+                auth.signInAnonymously()
+            }
+            auth.currentUser
+        } catch (ex: Exception) {
+            Napier.e("ensureAuth failed", ex, this::class.simpleName)
+            null
         }
-        return auth.currentUser
+
     }
 
     override fun createRoom() {
@@ -126,13 +134,14 @@ internal class FirebaseRepository(
                 clipboardCache.insertClip(
                     timestamp = dto.timestamp,
                     text = dto.text,
+                    room_id = roomId,
                     sender_id = dto.senderId,
                     sender_name = dto.senderName
                 )
             }
             .launchIn(this@channelFlow)
 
-        clipboardCache.selectLatestClip()
+        clipboardCache.selectLatestClip(roomId)
             .asFlow()
             .mapToOneNotNull(ioDispatcher)
             .collect { entity ->

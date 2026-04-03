@@ -5,6 +5,5 @@
     <string name="copied">Copied</string>
     <string name="failedOpenURL">Failed to open as URL</string>
     <string name="errorRelogin">Error occurred, please relogin</string>
-    <string name="showJoinCode">Join code</string>
     <string name="toAuth">Auth</string>
 </resources>

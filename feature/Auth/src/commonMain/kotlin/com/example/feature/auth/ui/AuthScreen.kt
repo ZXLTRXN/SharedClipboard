@@ -28,8 +28,10 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import sharedclipboard.feature.auth.generated.resources.Res
 import sharedclipboard.feature.auth.generated.resources.cancel
+import sharedclipboard.feature.auth.generated.resources.codePlaceholder
 import sharedclipboard.feature.auth.generated.resources.connect
 import sharedclipboard.feature.auth.generated.resources.createRoom
+import sharedclipboard.feature.auth.generated.resources.enterCode
 import sharedclipboard.feature.auth.generated.resources.errorRelogin
 import sharedclipboard.feature.auth.generated.resources.joinRoom
 import sharedclipboard.feature.auth.generated.resources.toAuth
@@ -100,6 +102,12 @@ fun AuthJoinExistingRoomDefaultScreen(
     ) {
         TextField(
             state = textFieldState,
+            label = {
+                Text(stringResource(Res.string.enterCode))
+            },
+            placeholder = {
+                Text(stringResource(Res.string.codePlaceholder))
+            },
             modifier = Modifier.align(Alignment.Center).fillMaxWidth()
         )
         Button(

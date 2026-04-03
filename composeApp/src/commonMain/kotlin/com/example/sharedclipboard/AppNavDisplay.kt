@@ -1,5 +1,7 @@
 package com.example.sharedclipboard
 
+import BottomSheetSceneStrategy
+import Navigator
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
@@ -12,30 +14,16 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.example.feature.auth.ui.authFeature
 import com.example.feature.clipboard.ui.clipboardFeature
-import org.koin.compose.viewmodel.koinViewModel
-import rememberNavigator
-import routes.AuthRoutes
-import routes.ClipboardRoutes
-import routes.navSerializersConfig
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppNavDisplay(
+    appViewModel: AppViewModel,
+    navigator: Navigator,
     contentPadding: PaddingValues,
-    modifier: Modifier = Modifier,
-    appViewModel: AppViewModel = koinViewModel()
+    modifier: Modifier = Modifier
 ) {
-    val defaultRoute = if (appViewModel.isLoggedIn) {
-        ClipboardRoutes.Clipboard
-    } else {
-        AuthRoutes.SelectMethod
-    }
-
-    val navigator = rememberNavigator(
-        navSerializersConfig,
-        defaultRoute,
-    )
 
     val bottomSheetStrategy = remember { BottomSheetSceneStrategy<NavKey>() }
 
@@ -55,10 +43,15 @@ fun AppNavDisplay(
                 contentPadding
             )
             authFeature(
-                navigator,
-                modifier,
-                contentPadding,
-                appViewModel::createRoom
+                navigator = navigator,
+                onLogout = {
+                    navigator.logout(appViewModel)
+                },
+                modifier = modifier,
+                contentPadding = contentPadding,
+                createRoom =  {
+                    navigator.login(appViewModel)
+                }
             )
         }
     )

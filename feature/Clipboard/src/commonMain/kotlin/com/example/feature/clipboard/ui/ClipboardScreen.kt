@@ -1,6 +1,7 @@
 package com.example.feature.clipboard.ui
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +13,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -39,16 +42,16 @@ import com.example.core.ui.composables.ReloadableTextField
 import com.example.feature.clipboard.ui.state.ClipboardIntent
 import com.example.feature.clipboard.ui.state.ClipboardSideEffect
 import com.example.feature.clipboard.ui.state.ClipboardState
-import kotlinx.coroutines.flow.receiveAsFlow
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 import org.koin.compose.viewmodel.koinViewModel
 import sharedclipboard.feature.clipboard.generated.resources.Res
 import sharedclipboard.feature.clipboard.generated.resources.emptyBuffer
 import sharedclipboard.feature.clipboard.generated.resources.errorRelogin
 import sharedclipboard.feature.clipboard.generated.resources.localClipboard
 import sharedclipboard.feature.clipboard.generated.resources.send
-import sharedclipboard.feature.clipboard.generated.resources.showJoinCode
+import sharedclipboard.feature.clipboard.generated.resources.share_ic
 import sharedclipboard.feature.clipboard.generated.resources.toAuth
 
 @Composable
@@ -68,10 +71,6 @@ fun ClipboardScreenStateful(
                     snackbarHostState.showSnackbar(
                         message = getString(effect.message)
                     )
-                }
-
-                is ClipboardSideEffect.GoToAuth -> {
-                    onGoToAuth()
                 }
             }
         }
@@ -148,24 +147,17 @@ fun ClipboardSuccessStateScreen(
             reloadTrigger
         ) { mutableStateOf(state.localValue) }
 
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
+        Box(
+            contentAlignment = Alignment.CenterEnd,
             modifier = Modifier.fillMaxWidth()
         ) {
-            TextButton(onClick = {
-                onIntent(
-                    ClipboardIntent.GoToAuth
-                )
-            }) {
-                Text(stringResource(Res.string.toAuth))
-            }
 
-            TextButton(onClick = {
+            IconButton(onClick = {
                 onIntent(
                     ClipboardIntent.GoToShowJoinCode
                 )
             }) {
-                Text(stringResource(Res.string.showJoinCode))
+                Icon(vectorResource(Res.drawable.share_ic), contentDescription = null)
             }
         }
 

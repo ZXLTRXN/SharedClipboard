@@ -12,6 +12,7 @@ import com.example.firebaseapi.domain.ClipboardRepository
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
@@ -21,6 +22,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.launch
 import sharedclipboard.feature.clipboard.generated.resources.Res
@@ -36,20 +38,27 @@ class ClipboardViewModel(
 
     private val stateCombination: Flow<ClipboardState> = combine(
         repository.observeMessages()
-            .onStart { emit(ClipModel.EMPTY) },
+            .onStart { emit(ClipModel.LOADING) }
+            .transform { value ->
+                emit(value)
+                if (value == ClipModel.LOADING) {
+                    delay(1000)
+                    emit(ClipModel.TIMEOUT)
+                }
+            },
         localClipboardProvider.currentClipboard
             .onStart { emit("") },
     ) { remoteValue, localValue ->
         Napier.d(
             "producing state combination: " +
-                    "\nremoteValue: ${remoteValue.text.take(15)}..., " +
-                    "\nlocalValue: ${localValue.take(15)}...",
+                    "\nremoteValue: ${remoteValue.text.take(20)} ..., " +
+                    "\nlocalValue: ${localValue.take(20)} ...",
             tag = this::class.simpleName
         )
         ClipboardState.Success(
             remoteValue.text,
             localValue,
-            remoteValue == ClipModel.EMPTY
+            remoteLoading = remoteValue == ClipModel.LOADING
         )
     }.catch<ClipboardState> { ex ->
         Napier.e(
