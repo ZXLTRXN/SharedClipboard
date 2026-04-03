@@ -1,5 +1,9 @@
 package com.example.feature.auth.ui
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -9,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,10 +39,16 @@ fun AuthSelectorScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Bottom
     ) {
-        if (isLoggedIn) {
-            OutlinedButton(onClick = onLeaveRoom,
+        AnimatedVisibility(
+            visible = isLoggedIn,
+            exit = fadeOut(animationSpec = tween(300)),
+            enter = fadeIn(animationSpec = tween(300))
+        ) {
+            OutlinedButton(
+                onClick = onLeaveRoom,
                 modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.errorOutlinedButtonColors()) {
+                colors = ButtonDefaults.errorOutlinedButtonColors()
+            ) {
                 Text(stringResource(Res.string.leaveRoom))
             }
             Spacer(
@@ -47,13 +56,19 @@ fun AuthSelectorScreen(
             )
         }
 
-        OutlinedButton(onClick = onCreateRoom, modifier = Modifier.fillMaxWidth()) {
+        OutlinedButton(
+            onClick = onCreateRoom,
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Text(stringResource(Res.string.createRoom))
         }
         Spacer(
             Modifier.height(16.dp)
         )
-        Button(onClick = onJoinExistingRoom, modifier = Modifier.fillMaxWidth()) {
+        Button(
+            onClick = onJoinExistingRoom,
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Text(stringResource(Res.string.joinRoom))
         }
     }

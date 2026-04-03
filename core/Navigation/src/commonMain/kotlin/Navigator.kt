@@ -1,5 +1,4 @@
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -9,10 +8,8 @@ import androidx.compose.runtime.saveable.rememberSerializable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.navigation3.runtime.NavKey
-import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.savedstate.compose.serialization.serializers.SnapshotStateListSerializer
 import androidx.savedstate.serialization.SavedStateConfiguration
-import io.github.aakira.napier.Napier
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.PolymorphicSerializer
@@ -45,16 +42,12 @@ class Navigator(
 
     fun goTo(route: NavKey) {
         if (backStack.lastOrNull() == route) return
-//        backStack.add(route)
         addWithAuthCheck(route)
 
     }
 
     fun clearAndGoTo(route: NavKey) {
         backStack.clear()
-
-//        backStack.removeLastOrNull()
-//        backStack.add(route)
         addWithAuthCheck(route)
     }
 
@@ -101,7 +94,11 @@ fun rememberNavigator(
         if (isLoggedIn) initialLoggedScreen else AuthRoutes.SelectMethod
     }
 
-    val navigator = rememberNavigator(configuration, isLoggedIn, initialRoute)
+    val navigator = rememberNavigator(
+        configuration,
+        isLoggedIn,
+        initialRoute
+    )
 
     return navigator
 }
@@ -121,7 +118,10 @@ fun rememberNavigator(
         configuration = configuration,
         serializer = NavigatorSerializer(PolymorphicSerializer(NavKey::class)),
     ) {
-        Navigator(isLoggedIn, initialStack.toList())
+        Navigator(
+            isLoggedIn,
+            initialStack.toList()
+        )
     }
     return navigator
 }
@@ -134,15 +134,30 @@ class NavigatorSerializer<T : NavKey>(
 
     @OptIn(ExperimentalSerializationApi::class)
     override val descriptor: SerialDescriptor =
-    buildClassSerialDescriptor("com.example.Navigator") {
-        element<Boolean>("isLoggedIn")
-        element("backStack", delegate.descriptor)
-    }
+        buildClassSerialDescriptor("com.example.Navigator") {
+            element<Boolean>("isLoggedIn")
+            element(
+                "backStack",
+                delegate.descriptor
+            )
+        }
 
-    override fun serialize(encoder: Encoder, value: Navigator) {
+    override fun serialize(
+        encoder: Encoder,
+        value: Navigator
+    ) {
         val composite = encoder.beginStructure(descriptor)
-        composite.encodeBooleanElement(descriptor, 0, value.isLoggedIn)
-        composite.encodeSerializableElement(descriptor, 1, delegate, value.backStack as SnapshotStateList<T>)
+        composite.encodeBooleanElement(
+            descriptor,
+            0,
+            value.isLoggedIn
+        )
+        composite.encodeSerializableElement(
+            descriptor,
+            1,
+            delegate,
+            value.backStack as SnapshotStateList<T>
+        )
         composite.endStructure(descriptor)
     }
 
@@ -154,37 +169,26 @@ class NavigatorSerializer<T : NavKey>(
         loop@ while (true) {
             when (val index = composite.decodeElementIndex(descriptor)) {
                 CompositeDecoder.DECODE_DONE -> break@loop
-                0 -> isLoggedIn = composite.decodeBooleanElement(descriptor, 0)
-                1 -> backStack = composite.decodeSerializableElement(descriptor, 1, delegate)
+                0 -> isLoggedIn = composite.decodeBooleanElement(
+                    descriptor,
+                    0
+                )
+
+                1 -> backStack = composite.decodeSerializableElement(
+                    descriptor,
+                    1,
+                    delegate
+                )
+
                 else -> throw SerializationException("Unknown index $index")
             }
         }
         composite.endStructure(descriptor)
 
         val finalStack = backStack ?: throw SerializationException("BackStack is missing")
-        return Navigator(isLoggedIn, finalStack)
+        return Navigator(
+            isLoggedIn,
+            finalStack
+        )
     }
-
-//    @OptIn(ExperimentalSerializationApi::class)
-//    override val descriptor: SerialDescriptor =
-//        SerialDescriptor(
-//            "com.example.Navigator",
-//            delegate.descriptor
-//        )
-//
-//    override fun serialize(
-//        encoder: Encoder,
-//        value: Navigator
-//    ) {
-//        encoder.encodeSerializableValue(
-//            delegate,
-//            value.backStack as SnapshotStateList<T>
-//        )
-//    }
-//
-//    override fun deserialize(decoder: Decoder): Navigator {
-//        val restoredStack = decoder.decodeSerializableValue(delegate)
-//        val restoredIsLoggedIn =
-//        return Navigator(restoredIsLoggedIn,restoredStack)
-//    }
 }
