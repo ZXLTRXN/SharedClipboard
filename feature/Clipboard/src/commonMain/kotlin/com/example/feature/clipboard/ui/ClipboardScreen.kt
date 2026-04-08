@@ -24,6 +24,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,7 +39,7 @@ import com.example.core.ui.composables.ErrorScreen
 import com.example.core.ui.composables.FlashTextWithDetection
 import com.example.core.ui.composables.LoadingScreen
 import com.example.core.ui.composables.LocalSnackbarHostState
-import com.example.core.ui.composables.ReloadableTextField
+import com.example.core.ui.composables.TwoTrailingTextField
 import com.example.feature.clipboard.ui.state.ClipboardIntent
 import com.example.feature.clipboard.ui.state.ClipboardSideEffect
 import com.example.feature.clipboard.ui.state.ClipboardState
@@ -52,6 +53,8 @@ import sharedclipboard.feature.clipboard.generated.resources.errorRelogin
 import sharedclipboard.feature.clipboard.generated.resources.localClipboard
 import sharedclipboard.feature.clipboard.generated.resources.send
 import sharedclipboard.feature.clipboard.generated.resources.share_ic
+import sharedclipboard.feature.clipboard.generated.resources.refresh_ic
+import sharedclipboard.feature.clipboard.generated.resources.link_ic
 import sharedclipboard.feature.clipboard.generated.resources.toAuth
 
 @Composable
@@ -142,7 +145,7 @@ fun ClipboardSuccessStateScreen(
     ) {
         var reloadTrigger by remember { mutableStateOf(false) }
 
-        var input by remember(
+        var input by rememberSaveable(
             state.localValue,
             reloadTrigger
         ) { mutableStateOf(state.localValue) }
@@ -210,11 +213,19 @@ fun ClipboardSuccessStateScreen(
             }
 
             Spacer(modifier = Modifier.height(30.dp))
-            ReloadableTextField(
+            TwoTrailingTextField(
                 input,
                 onValueChange = { input = it },
-                onReload = { reloadTrigger = !reloadTrigger },
                 labelRes = Res.string.localClipboard,
+                firstIcon = Res.drawable.link_ic,
+                secondIcon = Res.drawable.refresh_ic,
+                onFirstClick = {
+                    val filtered = InputFilters.filterContent(input)
+                    if (filtered != input) {
+                        input = filtered
+                    }
+                },
+                onSecondClick = { reloadTrigger = !reloadTrigger },
                 modifier = Modifier.fillMaxWidth()
             )
         }

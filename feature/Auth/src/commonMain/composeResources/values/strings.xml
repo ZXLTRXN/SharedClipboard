@@ -11,4 +11,5 @@
     <string name="enterCode">Enter code from existing device</string>
     <string name="codePlaceholder">123456</string>
     <string name="roomCode">Join room</string>
+    <string name="copyCode">Use this code to connect another device</string>
 </resources>

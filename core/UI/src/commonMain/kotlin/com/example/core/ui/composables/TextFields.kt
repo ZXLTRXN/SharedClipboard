@@ -1,5 +1,6 @@
 package com.example.core.ui.composables
 
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
@@ -14,18 +15,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
-import sharedclipboard.core.ui.generated.resources.Res
-import sharedclipboard.core.ui.generated.resources.refresh_ic
 
 @Composable
-fun ReloadableTextField(
+fun TwoTrailingTextField(
     value: String,
     onValueChange: (String) -> Unit,
-    onReload: () -> Unit,
     labelRes: StringResource,
+    firstIcon: DrawableResource,
+    secondIcon: DrawableResource,
+    onFirstClick: () -> Unit,
+    onSecondClick: () -> Unit,
     modifier: Modifier = Modifier,
     keyboardOptions: KeyboardOptions = KeyboardOptions(
         keyboardType = KeyboardType.Text,
@@ -44,14 +47,25 @@ fun ReloadableTextField(
         },
         shape = MaterialTheme.shapes.medium,
         trailingIcon = {
-            IconButton(
-                onClick = onReload
-            ) {
-                Icon(
-                    vectorResource(Res.drawable.refresh_ic),
-                    contentDescription = null
-                )
+            Row {
+                IconButton(
+                    onClick = onFirstClick
+                ) {
+                    Icon(
+                        vectorResource(firstIcon),
+                        contentDescription = null
+                    )
+                }
+                IconButton(
+                    onClick = onSecondClick
+                ) {
+                    Icon(
+                        vectorResource(secondIcon),
+                        contentDescription = null
+                    )
+                }
             }
+
         },
         colors = TextFieldDefaults.colors(
             unfocusedContainerColor = Color.Transparent,
