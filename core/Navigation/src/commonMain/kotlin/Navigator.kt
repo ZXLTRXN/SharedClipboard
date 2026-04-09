@@ -51,13 +51,13 @@ class Navigator(
         addWithAuthCheck(route)
     }
 
-    fun login(listener: AuthListener) {
-        listener.onLogin()
+    fun login(performer: AuthPerformer) {
+        performer.login()
         isLoggedIn = true
     }
 
-    fun logout(listener: AuthListener) {
-        listener.onLogout()
+    fun logout(performer: AuthPerformer) {
+        performer.logout()
         isLoggedIn = false
         backStack.removeAll { it is NeedAuth }
         if (backStack.isEmpty()) {
@@ -78,9 +78,9 @@ class Navigator(
         backStack.removeLastOrNull()
     }
 
-    interface AuthListener {
-        fun onLogout()
-        fun onLogin()
+    interface AuthPerformer {
+        fun logout()
+        fun login()
     }
 }
 

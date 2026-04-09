@@ -2,6 +2,10 @@ package com.example.sharedclipboard
 
 import BottomSheetSceneStrategy
 import Navigator
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
@@ -24,7 +28,7 @@ fun AppNavDisplay(
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier
 ) {
-
+    val animationDuration = 300
     val bottomSheetStrategy = remember { BottomSheetSceneStrategy<NavKey>() }
 
     NavDisplay(
@@ -47,11 +51,38 @@ fun AppNavDisplay(
                 onLogout = {
                     navigator.logout(appViewModel)
                 },
-                modifier = modifier,
-                contentPadding = contentPadding,
-                createRoom =  {
+                onLogin = {
                     navigator.login(appViewModel)
-                }
+                },
+                modifier = modifier,
+                contentPadding = contentPadding
+            )
+        },
+        transitionSpec = {
+            slideInHorizontally(
+                initialOffsetX = { it },
+                animationSpec = tween(animationDuration)
+            ) togetherWith slideOutHorizontally(
+                targetOffsetX = { -it },
+                animationSpec = tween(animationDuration)
+            )
+        },
+        popTransitionSpec = {
+            slideInHorizontally(
+                initialOffsetX = { -it },
+                animationSpec = tween(animationDuration)
+            ) togetherWith slideOutHorizontally(
+                targetOffsetX = { it },
+                animationSpec = tween(animationDuration)
+            )
+        },
+        predictivePopTransitionSpec = {
+            slideInHorizontally(
+                initialOffsetX = { -it },
+                animationSpec = tween(animationDuration)
+            ) togetherWith slideOutHorizontally(
+                targetOffsetX = { it },
+                animationSpec = tween(animationDuration)
             )
         }
     )

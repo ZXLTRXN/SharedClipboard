@@ -42,7 +42,7 @@ class ClipboardViewModel(
             .transform { value ->
                 emit(value)
                 if (value == ClipModel.LOADING) {
-                    delay(1000)
+                    delay(500)
                     emit(ClipModel.TIMEOUT)
                 }
             },
@@ -71,7 +71,7 @@ class ClipboardViewModel(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val state = flow {
-        val user = authRepository.ensureAuth()
+        val user = authRepository.ensureAuth() // fixme унести за Splash
         emit(user)
     }.transformLatest { user ->
         if (user == null) {

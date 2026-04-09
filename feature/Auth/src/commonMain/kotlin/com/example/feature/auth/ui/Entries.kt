@@ -15,9 +15,9 @@ import routes.ClipboardRoutes
 fun EntryProviderScope<NavKey>.authFeature(
     navigator: Navigator,
     onLogout: () -> Unit,
+    onLogin: () -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
-    createRoom: () -> Unit,
 ) {
 
     entry<AuthRoutes.SelectMethod> {
@@ -27,7 +27,7 @@ fun EntryProviderScope<NavKey>.authFeature(
                 onLogout()
             },
             onCreateRoom = {
-                createRoom()
+                onLogin()
                 navigator.clearAndGoTo(ClipboardRoutes.Clipboard)
                 navigator.goTo(AuthRoutes.ShowJoinCode)
             },
@@ -48,6 +48,7 @@ fun EntryProviderScope<NavKey>.authFeature(
         AuthJoinExistingRoomScreenStateful(
             modifier = modifier.padding(contentPadding),
             navigateToClipboardScreen = {
+                onLogin() // room already created in AuthViewModel
                 navigator.clearAndGoTo(ClipboardRoutes.Clipboard)
             },
             navigateToAuthScreen = {

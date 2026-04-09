@@ -3,7 +3,6 @@ package com.example.feature.clipboard.ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,7 +17,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -145,7 +143,7 @@ fun ClipboardSuccessStateScreen(
     ) {
         var reloadTrigger by remember { mutableStateOf(false) }
 
-        var input by rememberSaveable(
+        val inputState = rememberSaveable(
             state.localValue,
             reloadTrigger
         ) { mutableStateOf(state.localValue) }
@@ -214,15 +212,15 @@ fun ClipboardSuccessStateScreen(
 
             Spacer(modifier = Modifier.height(30.dp))
             TwoTrailingTextField(
-                input,
-                onValueChange = { input = it },
+                inputState,
+                onValueChange = { inputState.value = it },
                 labelRes = Res.string.localClipboard,
                 firstIcon = Res.drawable.link_ic,
                 secondIcon = Res.drawable.refresh_ic,
                 onFirstClick = {
-                    val filtered = InputFilters.filterContent(input)
-                    if (filtered != input) {
-                        input = filtered
+                    val filtered = InputFilters.filterContent(inputState.value)
+                    if (filtered != inputState.value) {
+                        inputState.value = filtered
                     }
                 },
                 onSecondClick = { reloadTrigger = !reloadTrigger },
@@ -234,7 +232,7 @@ fun ClipboardSuccessStateScreen(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
                 onIntent(
-                    ClipboardIntent.SendLocal(input)
+                    ClipboardIntent.SendLocal(inputState.value)
                 )
             }) {
             Text(stringResource(Res.string.send))

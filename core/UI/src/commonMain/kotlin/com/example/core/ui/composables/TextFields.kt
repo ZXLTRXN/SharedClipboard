@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
@@ -22,7 +23,7 @@ import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 fun TwoTrailingTextField(
-    value: String,
+    inputState: MutableState<String>,
     onValueChange: (String) -> Unit,
     labelRes: StringResource,
     firstIcon: DrawableResource,
@@ -38,7 +39,7 @@ fun TwoTrailingTextField(
     val focusManager = LocalFocusManager.current
 
     TextField(
-        value,
+        inputState.value,
         onValueChange = onValueChange,
         modifier = modifier,
         maxLines = 3,

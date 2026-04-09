@@ -8,7 +8,7 @@ import kotlinx.coroutines.launch
 
 class AppViewModel(
     private val authRepository: AuthRepository
-) : ViewModel(), Navigator.AuthListener {
+) : ViewModel(), Navigator.AuthPerformer {
 
     init {
         viewModelScope.launch {
@@ -19,12 +19,15 @@ class AppViewModel(
     val isLoggedIn: Boolean
         get() = authRepository.isRoomAttached
 
-    override fun onLogout() {
+    override fun logout() {
         authRepository.quitFromRoom()
     }
 
-    override fun onLogin() {
-        authRepository.createRoom()
+    override fun login() {
+        if (!isLoggedIn) {
+            authRepository.createRoom()
+        }
+
     }
 
 }
