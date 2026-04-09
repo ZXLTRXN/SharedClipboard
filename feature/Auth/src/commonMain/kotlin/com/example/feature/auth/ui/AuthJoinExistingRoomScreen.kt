@@ -1,20 +1,15 @@
 package com.example.feature.auth.ui
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,17 +18,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.core.ui.composables.ErrorScreen
+import com.example.core.ui.composables.maxWidthButtonsTablets
 import kotlinx.coroutines.flow.receiveAsFlow
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import sharedclipboard.feature.auth.generated.resources.Res
-import sharedclipboard.feature.auth.generated.resources.cancel
 import sharedclipboard.feature.auth.generated.resources.codePlaceholder
 import sharedclipboard.feature.auth.generated.resources.connect
-import sharedclipboard.feature.auth.generated.resources.createRoom
 import sharedclipboard.feature.auth.generated.resources.enterCode
 import sharedclipboard.feature.auth.generated.resources.errorRelogin
-import sharedclipboard.feature.auth.generated.resources.joinRoom
 import sharedclipboard.feature.auth.generated.resources.toAuth
 
 @Composable
@@ -108,13 +101,18 @@ fun AuthJoinExistingRoomDefaultScreen(
             placeholder = {
                 Text(stringResource(Res.string.codePlaceholder))
             },
-            modifier = Modifier.align(Alignment.Center).fillMaxWidth()
+            modifier = Modifier.align(Alignment.Center)
+                .widthIn(max = maxWidthButtonsTablets)
+                .fillMaxWidth()
         )
         Button(
             onClick = {
                 onAccept(textFieldState.text.toString())
             },
             modifier = Modifier.align(Alignment.BottomCenter)
+                .widthIn(max = maxWidthButtonsTablets)
+                .fillMaxWidth()
+
         ) {
             Text(stringResource(Res.string.connect))
         }

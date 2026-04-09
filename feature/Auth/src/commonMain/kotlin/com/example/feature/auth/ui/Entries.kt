@@ -27,6 +27,7 @@ fun EntryProviderScope<NavKey>.authFeature(
                 onLogout()
             },
             onCreateRoom = {
+                onLogout()
                 onLogin()
                 navigator.clearAndGoTo(ClipboardRoutes.Clipboard)
                 navigator.goTo(AuthRoutes.ShowJoinCode)

@@ -4,6 +4,7 @@ import Navigator
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.firebaseapi.domain.AuthRepository
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.launch
 
 class AppViewModel(
@@ -26,6 +27,8 @@ class AppViewModel(
     override fun login() {
         if (!isLoggedIn) {
             authRepository.createRoom()
+        } else {
+            Napier.i("Already logged in", tag = this::class.simpleName)
         }
 
     }

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -38,6 +39,8 @@ import com.example.core.ui.composables.FlashTextWithDetection
 import com.example.core.ui.composables.LoadingScreen
 import com.example.core.ui.composables.LocalSnackbarHostState
 import com.example.core.ui.composables.TwoTrailingTextField
+import com.example.core.ui.composables.maxWidthButtonsTablets
+import com.example.core.ui.composables.maxWidthTextsTablets
 import com.example.feature.clipboard.ui.state.ClipboardIntent
 import com.example.feature.clipboard.ui.state.ClipboardSideEffect
 import com.example.feature.clipboard.ui.state.ClipboardState
@@ -165,6 +168,7 @@ fun ClipboardSuccessStateScreen(
 
         Column(
             verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
@@ -191,7 +195,9 @@ fun ClipboardSuccessStateScreen(
                 else -> {
                     FlashTextWithDetection(
                         state.remoteValue,
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .widthIn(max = maxWidthTextsTablets)
+                            .fillMaxWidth(),
                         onLongPress = {
                             clipboard.setText(AnnotatedString(state.remoteValue))
                             onIntent(
@@ -224,12 +230,16 @@ fun ClipboardSuccessStateScreen(
                     }
                 },
                 onSecondClick = { reloadTrigger = !reloadTrigger },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .widthIn(max = maxWidthTextsTablets)
+                    .fillMaxWidth()
             )
         }
 
         Button(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .widthIn(max = maxWidthButtonsTablets)
+                .fillMaxWidth(),
             onClick = {
                 onIntent(
                     ClipboardIntent.SendLocal(inputState.value)
