@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
@@ -44,10 +45,9 @@ fun App() {
         CompositionLocalProvider(LocalSnackbarHostState provides snackbarHostState) {
             Scaffold(
                 snackbarHost = { SnackbarHost(snackbarHostState) },
-                modifier = Modifier.imePadding(),
                 bottomBar = {
                     AnimatedVisibility(
-                        visible = navigator.isLoggedIn,
+                        visible = navigator.showBottomBar,
                         enter = slideInVertically(
                             initialOffsetY = { fullHeight -> fullHeight },
                             animationSpec = tween(durationMillis = 300)

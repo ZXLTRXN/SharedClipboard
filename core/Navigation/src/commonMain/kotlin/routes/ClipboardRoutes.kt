@@ -1,5 +1,6 @@
 package routes
 
+import DisabledNavBar
 import NeedAuth
 import TopLevelRoute
 import androidx.navigation3.runtime.NavKey
@@ -15,4 +16,7 @@ sealed interface ClipboardRoutes: NavKey {
         override val icon: DrawableResource
             get() = Res.drawable.home_ic
     }
+
+    @Serializable
+    data object History: ClipboardRoutes, NeedAuth, DisabledNavBar
 }

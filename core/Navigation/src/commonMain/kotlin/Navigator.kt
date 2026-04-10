@@ -31,11 +31,12 @@ class Navigator(
         private set
 
     val topLevelRoute by derivedStateOf {
-        backStack.findLast { it is TopLevelRoute } as? TopLevelRoute
+        backStack.findLast { it is TopLevelRoute }
     }
 
     val showBottomBar by derivedStateOf {
-        isLoggedIn
+        val currentKey = backStack.lastOrNull()
+        isLoggedIn && (currentKey !is DisabledNavBar)
     }
 
     val backStack: SnapshotStateList<NavKey> = mutableStateListOf(*initialStack.toTypedArray())
@@ -43,7 +44,6 @@ class Navigator(
     fun goTo(route: NavKey) {
         if (backStack.lastOrNull() == route) return
         addWithAuthCheck(route)
-
     }
 
     fun clearAndGoTo(route: NavKey) {

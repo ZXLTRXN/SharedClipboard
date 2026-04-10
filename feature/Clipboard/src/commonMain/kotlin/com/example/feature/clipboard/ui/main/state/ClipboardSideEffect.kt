@@ -1,4 +1,4 @@
-package com.example.feature.clipboard.ui.state
+package com.example.feature.clipboard.ui.main.state
 
 import org.jetbrains.compose.resources.StringResource
 

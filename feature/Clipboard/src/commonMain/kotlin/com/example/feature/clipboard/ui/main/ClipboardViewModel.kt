@@ -1,11 +1,11 @@
-package com.example.feature.clipboard.ui
+package com.example.feature.clipboard.ui.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.feature.clipboard.domain.LocalClipboardProvider
-import com.example.feature.clipboard.ui.state.ClipboardIntent
-import com.example.feature.clipboard.ui.state.ClipboardSideEffect
-import com.example.feature.clipboard.ui.state.ClipboardState
+import com.example.feature.clipboard.ui.main.state.ClipboardIntent
+import com.example.feature.clipboard.ui.main.state.ClipboardSideEffect
+import com.example.feature.clipboard.ui.main.state.ClipboardState
 import com.example.firebaseapi.domain.AuthRepository
 import com.example.firebaseapi.domain.ClipModel
 import com.example.firebaseapi.domain.ClipboardRepository
@@ -22,7 +22,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.launch
 import sharedclipboard.feature.clipboard.generated.resources.Res
@@ -33,16 +32,17 @@ import sharedclipboard.feature.clipboard.generated.resources.failedOpenURL
 class ClipboardViewModel(
     private val repository: ClipboardRepository,
     private val authRepository: AuthRepository,
-    localClipboardProvider: LocalClipboardProvider,
+    localClipboardProvider: LocalClipboardProvider
 ) : ViewModel() {
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     private val stateCombination: Flow<ClipboardState> = combine(
-        repository.observeMessages()
+        repository.latestClip()
             .onStart { emit(ClipModel.LOADING) }
-            .transform { value ->
+            .transformLatest { value ->
                 emit(value)
                 if (value == ClipModel.LOADING) {
-                    delay(500)
+                    delay(1000)
                     emit(ClipModel.TIMEOUT)
                 }
             },
@@ -108,15 +108,15 @@ class ClipboardViewModel(
             )
 
             ClipboardIntent.GoToAuth,
-            ClipboardIntent.GoToShowJoinCode -> {
-            }
+            ClipboardIntent.GoToShowJoinCode,
+            ClipboardIntent.GoToHistory-> {} // nav
         }
     }
 
     private fun sendLocal(localClipboard: String) {
         viewModelScope.launch {
             try {
-                repository.saveMessage(localClipboard)
+                repository.saveClip(localClipboard)
             } catch (ex: IllegalStateException) {
                 Napier.e(
                     "Cant save message",

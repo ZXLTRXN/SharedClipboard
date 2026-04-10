@@ -6,10 +6,13 @@ interface ClipboardRepository {
     /**
      * @throws NoAttachedRoomException if no room saved
      */
-    suspend fun saveMessage(text: String)
+    suspend fun saveClip(text: String)
+
+    suspend fun deleteClip(timestamp: Long)
 
     /**
      * @throws NoAttachedRoomException in flow if no room saved
      */
-    fun observeMessages(): Flow<ClipModel>
+    fun latestClip(): Flow<ClipModel>
+    fun allClips(): Flow<List<ClipModel>>
 }

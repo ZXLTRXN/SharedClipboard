@@ -122,7 +122,7 @@ class FirebaseRepositoryTest : KoinTest {
             every { dataSource.getClips(roomId) }.returns(flowOf(remoteDto))
 
             // 3. When & Then
-            repository.observeMessages().test {
+            repository.latestClip().test {
                 val item = awaitItem()
 
                 assertEquals(
@@ -138,7 +138,7 @@ class FirebaseRepositoryTest : KoinTest {
                     item.timestamp
                 )
 
-                val dbContent = clipboardCache.selectLatestClip().executeAsOne()
+                val dbContent = clipboardCache.selectLatestClip("room123").executeAsOne()
                 assertEquals(
                     "Hello from Firebase",
                     dbContent.text
@@ -149,14 +149,14 @@ class FirebaseRepositoryTest : KoinTest {
         }
 
     @Test
-    fun `saveMessage throws NoAttachedRoomException when roomId is null`() =
+    fun `saveClip throws NoAttachedRoomException when roomId is null`() =
         runTest(testDispatcher) {
             // Given
             every { settings.roomId }.returns(null)
 
             // When & Then
             assertFailsWith<NoAttachedRoomException> {
-                repository.saveMessage("Hello World")
+                repository.saveClip("Hello World")
             }
         }
 }

@@ -1,8 +1,9 @@
 package com.example.firebaseimpl.data
 
 import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToList
 import app.cash.sqldelight.coroutines.mapToOneNotNull
-import app.cash.sqldelight.db.SqlDriver
+import com.example.core.cache.db.Clipboard
 import com.example.core.cache.db.ClipboardQueries
 import com.example.firebaseapi.domain.AuthRepository
 import com.example.firebaseapi.domain.ClipModel
@@ -13,16 +14,16 @@ import com.example.firebaseapi.domain.NoAttachedRoomException
 import com.example.firebaseimpl.data.models.ClipboardDataDto
 import com.example.firebaseimpl.data.models.InviteDto
 import com.example.firebaseimpl.platform
-import dev.gitlive.firebase.auth.FirebaseAuth
 import dev.gitlive.firebase.auth.FirebaseUser
-import dev.gitlive.firebase.database.DatabaseException
 import io.github.aakira.napier.Napier
 import io.mockative.Mockable
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withContext
 import kotlin.random.Random
@@ -107,7 +108,7 @@ internal class FirebaseRepository(
     /**
      * @throws NoAttachedRoomException if no room saved
      */
-    override suspend fun saveMessage(text: String) = withContext(ioDispatcher) {
+    override suspend fun saveClip(text: String) = withContext(ioDispatcher) {
         val roomId: String = settings.roomId ?: throw NoAttachedRoomException()
         val deviceId: String = auth.currentUser?.uid ?: "unknown"
 
@@ -123,12 +124,36 @@ internal class FirebaseRepository(
         )
     }
 
+    override suspend fun deleteClip(timestamp: Long): Unit = withContext(ioDispatcher) {
+        clipboardCache.deleteByTimestamp(timestamp)
+    }
+
     /**
      * @throws NoAttachedRoomException IN FLOW if no room saved
      */
-    override fun observeMessages(): Flow<ClipModel> = channelFlow {
+    override fun latestClip(): Flow<ClipModel> =
+        channelFlow {
         val roomId = settings.roomId ?: throw NoAttachedRoomException()
 
+        saveClipsToDB(roomId = roomId, scope = this@channelFlow)
+
+        clipboardCache.selectLatestClip(roomId)
+            .asFlow()
+            .mapToOneNotNull(ioDispatcher)
+            .collect { entity ->
+                send(entity.toDomainModel())
+            }
+    }.flowOn(ioDispatcher)
+
+    override fun allClips(): Flow<List<ClipModel>> {
+        return clipboardCache
+            .selectAllClips()
+            .asFlow()
+            .mapToList(ioDispatcher)
+            .map { list -> list.map { it.toDomainModel() } }
+    }
+
+    private fun saveClipsToDB(roomId: String, scope: CoroutineScope) =
         dataSource.getClips(roomId)
             .onEach { dto ->
                 clipboardCache.insertClip(
@@ -139,23 +164,17 @@ internal class FirebaseRepository(
                     sender_name = dto.senderName
                 )
             }
-            .launchIn(this@channelFlow)
-
-        clipboardCache.selectLatestClip(roomId)
-            .asFlow()
-            .mapToOneNotNull(ioDispatcher)
-            .collect { entity ->
-                send(
-                    ClipModel(
-                        timestamp = entity.timestamp,
-                        text = entity.text,
-                        senderName = entity.sender_name
-                    )
-                )
-            }
-    }.flowOn(ioDispatcher)
+            .launchIn(scope)
 
     companion object {
         private val RANGE = 100000..999999
     }
+}
+
+fun Clipboard.toDomainModel(): ClipModel {
+    return ClipModel(
+        timestamp = timestamp,
+        text = text,
+        senderName = sender_name
+    )
 }

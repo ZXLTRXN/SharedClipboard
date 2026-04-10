@@ -1,4 +1,4 @@
-package com.example.feature.clipboard.ui
+package com.example.core.ui.composables
 
 object InputFilters {
     private val urlPattern = Regex("""(https?://|www\.)[^\s/$.?#].[^\s]*""")
