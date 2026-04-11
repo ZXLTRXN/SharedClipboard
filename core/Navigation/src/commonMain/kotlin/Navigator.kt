@@ -24,10 +24,10 @@ import routes.AuthRoutes
 import routes.ClipboardRoutes
 
 class Navigator(
-    isLoggedIn: Boolean,
+    initialIsLoggedIn: Boolean,
     initialStack: List<NavKey>
 ) {
-    var isLoggedIn by mutableStateOf(isLoggedIn)
+    var isLoggedIn by mutableStateOf(initialIsLoggedIn)
         private set
 
     val topLevelRoute by derivedStateOf {

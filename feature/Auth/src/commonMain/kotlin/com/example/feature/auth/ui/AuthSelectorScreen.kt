@@ -55,9 +55,6 @@ fun AuthSelectorScreen(
             ) {
                 Text(stringResource(Res.string.leaveRoom))
             }
-            Spacer(
-                Modifier.height(16.dp)
-            )
         }
 
         OutlinedButton(

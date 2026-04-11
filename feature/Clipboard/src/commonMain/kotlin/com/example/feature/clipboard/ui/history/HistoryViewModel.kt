@@ -14,7 +14,10 @@ class HistoryViewModel(
 ) : ViewModel() {
 
     var list: StateFlow<List<ClipUI>> = repository.allClips()
-        .map { list -> list.map { it.toUI() } }
+        .map { list -> list
+            .filter { it.text.isNotEmpty() }
+            .map { it.toUI() }
+        }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
