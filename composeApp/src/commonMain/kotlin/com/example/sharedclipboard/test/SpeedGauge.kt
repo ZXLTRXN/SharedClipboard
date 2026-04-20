@@ -55,14 +55,15 @@ fun SpeedGauge100(
 
     val textMeasurer = rememberTextMeasurer()
 
-    Box(modifier.aspectRatio(1f)) {
+    Box(modifier
+        .fillMaxWidth()
+        .aspectRatio(1f)) {
         Spacer(
             modifier = Modifier.fillMaxSize()
-//                .size(300.dp)
                 .graphicsLayer(compositingStrategy = CompositingStrategy.Offscreen)
                 .padding(padding)
                 .drawWithCache {
-                    println("drawWithCache")
+                    println("drawWithCache scale")
                     val strokeWidthPx = 5.dp.toPx()
                     val width = size.width
 
@@ -107,7 +108,7 @@ fun SpeedGauge100(
                     }
 
                     onDrawBehind {
-                        println("drawBehind")
+                        println("drawBehind scale")
                         drawArc(
                             color = secondaryColor,
                             startAngle = startAngle,
@@ -167,12 +168,9 @@ fun SpeedGauge100(
             sweepAngle = sweepAngle,
             max = 100f,
             modifier = Modifier.fillMaxSize()
-//                .size(300.dp)
                 .padding(padding)
         )
     }
-
-
 }
 
 @Composable
@@ -184,83 +182,82 @@ fun Arrow(
     modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colorScheme.primary
 ) {
-    val arrowPath = remember {
-        Path().apply {
-            moveTo(
-                0f,
-                20f
-            )
-            lineTo(
-                -15f,
-                0f
-            )
-            lineTo(
-                0f,
-                -250f
-            )
-            lineTo(
-                15f,
-                0f
-            )
-            close()
-        }
-    }
-
     val animatedSpeed = animateFloatAsState(
         targetValue = current,
         animationSpec = tween(durationMillis = 1000)
     )
 
-    Canvas(
-        modifier = modifier
-    ) {
-        val ratio = (animatedSpeed.value / max).coerceIn(
-            0f,
-            1f
-        )
-        val currentSweep = ratio * sweepAngle
+    Spacer(
+    modifier = modifier.drawWithCache {
+        val centerX = size.width / 2
+        val centerY = size.height / 2
 
-        rotate(startAngle) { // чтобы красный был с начала дуги, а не с 0 градусов
-            drawArc(
-                brush = Brush.sweepGradient(
-                    0f to Color.Red,
-                    0.5f to Color.Blue,
-                    1f to Color.Green,
-                    center = center,
-                ),
-                startAngle = 0f,
-                sweepAngle = currentSweep,
-                useCenter = false,
-                style = Stroke(
-                    width = 5.dp.toPx(),
-                    cap = StrokeCap.Round
-                ),
+        val arrowPath = Path().apply {
+            moveTo(
+                centerX + 0f,
+                centerY + 20f
             )
+            lineTo(
+                centerX - 15f,
+                centerY + 0f
+            )
+            lineTo(
+                centerX + 0f,
+                centerY - 250f
+            )
+            lineTo(
+                centerX + 15f,
+                centerY + 0f
+            )
+            close()
         }
 
-        val speedRotation = startAngle + 90f + currentSweep // 90 т.к стрелка изначально смотрит
-        // вверх, а не на 0 (вправо)
+        onDrawWithContent {
 
-        withTransform(
-            {
-                rotate(speedRotation)
-                translate(
-                    center.x,
-                    center.y
+            val ratio = (animatedSpeed.value / max).coerceIn(
+                0f,
+                1f
+            )
+            val currentSweep = ratio * sweepAngle
+
+            rotate(startAngle) { // чтобы красный был с начала дуги, а не с 0 градусов
+                drawArc(
+                    brush = Brush.sweepGradient(
+                        0f to Color.Red,
+                        0.5f to Color.Blue,
+                        1f to Color.Green,
+                        center = center,
+                    ),
+                    startAngle = 0f,
+                    sweepAngle = currentSweep,
+                    useCenter = false,
+                    style = Stroke(
+                        width = 5.dp.toPx(),
+                        cap = StrokeCap.Round
+                    ),
                 )
             }
-        ) {
-            drawPath(
-                arrowPath,
-                color = color
+
+            val speedRotation = startAngle + 90f + currentSweep // 90 т.к стрелка изначально смотрит
+            // вверх, а не на 0 (вправо)
+
+            withTransform( // для нескольких трансформаций
+                {
+                    rotate(speedRotation)
+                }
+            ) {
+                drawPath(
+                    arrowPath,
+                    color = color
+                )
+            }
+            drawCircle(
+                color = color,
+                radius = 6.dp.toPx(),
+                center = center
             )
         }
-        drawCircle(
-            color = color,
-            radius = 6.dp.toPx(),
-            center = center
-        )
-    }
+    })
 }
 
 @Preview
