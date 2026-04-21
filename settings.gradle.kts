@@ -42,3 +42,4 @@ include("feature:Auth")
 include("feature:Clipboard")
 include(":FirebaseImpl")
 
+include(":core:Network")

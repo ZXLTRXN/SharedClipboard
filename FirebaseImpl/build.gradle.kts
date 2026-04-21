@@ -67,6 +67,8 @@ kotlin {
                 implementation(libs.gitlive.firebase.auth)
                 implementation(libs.gitlive.firebase.database)
 
+                implementation(libs.ktor.client.core)
+                implementation(libs.ktor.client.content.negotiation)
 
                 implementation(project.dependencies.platform(libs.koin.bom))
                 implementation(libs.koin.core)
