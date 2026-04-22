@@ -1,15 +1,29 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.androidLint)
+
+    alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {
 
+    jvm {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+        }
+    }
+
     androidLibrary {
         namespace = "com.example.core.network"
-        compileSdk = 36
-        minSdk = 24
+        compileSdk = libs.versions.android.compileSdk.get().toInt()
+        minSdk = libs.versions.android.minSdk.get().toInt()
+
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+        }
 
         withHostTestBuilder {
         }
@@ -43,9 +57,39 @@ kotlin {
 
 
     sourceSets {
+        all {
+            languageSettings.optIn("kotlin.time.ExperimentalTime")
+        }
+
         commonMain {
             dependencies {
                 implementation(libs.kotlin.stdlib)
+                implementation(libs.kotlinx.coroutines.core)
+                implementation(libs.ktor.client.core)
+                implementation(libs.ktor.client.logging)
+                implementation(libs.ktor.client.auth)
+                implementation(libs.ktor.client.content.negotiation)
+                implementation(libs.ktor.serialization.kotlinx.json)
+
+                implementation(libs.napier)
+            }
+        }
+
+        androidMain {
+            dependencies {
+                implementation(libs.ktor.client.darwin)
+            }
+        }
+
+        iosMain {
+            dependencies {
+                implementation(libs.ktor.client.android)
+            }
+        }
+
+        jvmMain {
+            dependencies {
+                implementation(libs.ktor.client.java)
             }
         }
 
@@ -55,21 +99,11 @@ kotlin {
             }
         }
 
-        androidMain {
-            dependencies {
-            }
-        }
-
         getByName("androidDeviceTest") {
             dependencies {
                 implementation(libs.androidx.runner)
                 implementation(libs.androidx.core)
                 implementation(libs.androidx.testExt.junit)
-            }
-        }
-
-        iosMain {
-            dependencies {
             }
         }
     }
