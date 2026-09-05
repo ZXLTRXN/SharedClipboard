@@ -1,4 +1,5 @@
 # Android Studio
+.idea/
 /*/build/
 /*/local.properties
 /*/out
@@ -73,6 +74,7 @@ gen/
 # Gradle files
 .gradle
 .gradle/
+.kotlin/
 build/
 
 # Local configuration file
@@ -80,3 +82,13 @@ local.properties
 
 # Local application databases
 *.db
+
+# Signing keys and locally exported release artifacts
+*.jks
+*.keystore
+/composeApp/release/
+
+# Discarded generated icon concepts
+/design/shared-clipboard-icon-concept.png
+/design/shared-clipboard-icon-option-1.png
+/design/shared-clipboard-icon-option-2.png
