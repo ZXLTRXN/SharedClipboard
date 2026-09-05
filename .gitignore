@@ -77,3 +77,6 @@ build/
 
 # Local configuration file
 local.properties
+
+# Local application databases
+*.db
