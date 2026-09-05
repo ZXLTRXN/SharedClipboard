@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
@@ -42,14 +43,19 @@ import com.example.core.ui.composables.LocalSnackbarHostState
 import com.example.core.ui.composables.maxWidthTextsTablets
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import org.koin.compose.viewmodel.koinViewModel
 import sharedclipboard.feature.clipboard.generated.resources.Res
+import sharedclipboard.feature.clipboard.generated.resources.back
+import sharedclipboard.feature.clipboard.generated.resources.back_ic
 import sharedclipboard.feature.clipboard.generated.resources.copied
 import sharedclipboard.feature.clipboard.generated.resources.delete_ic
+import sharedclipboard.feature.clipboard.generated.resources.history
 
 @Composable
 fun HistoryScreenStateful(
+    onBack: () -> Unit,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
     viewModel: HistoryViewModel = koinViewModel(),
@@ -71,6 +77,7 @@ fun HistoryScreenStateful(
             }
         },
         onDelete = viewModel::delete,
+        onBack = onBack,
         contentPadding = contentPadding,
         modifier = modifier,
     )
@@ -81,31 +88,57 @@ fun HistoryScreen(
     list: List<ClipUI>,
     onClick: (ClipUI) -> Unit,
     onDelete: (ClipUI) -> Unit,
+    onBack: () -> Unit,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
-
-    ) {
-    LazyColumn(
-        contentPadding = PaddingValues(
-            start = contentPadding.calculateStartPadding(LayoutDirection.Ltr) + 16.dp,
-            end = contentPadding.calculateEndPadding(LayoutDirection.Ltr) + 16.dp,
-            top = contentPadding.calculateTopPadding() + 16.dp,
-            bottom = contentPadding.calculateBottomPadding()
-        ),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = modifier.fillMaxSize()
-
-    ) {
-        items(
-            list,
-            key = { item -> item.timestamp }
-        ) { item ->
-            HistoryItem(
-                item,
-                onClick,
-                onDelete
+) {
+    Column(modifier = modifier.fillMaxSize()) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    start = contentPadding.calculateStartPadding(LayoutDirection.Ltr) + 4.dp,
+                    end = contentPadding.calculateEndPadding(LayoutDirection.Ltr) + 16.dp,
+                    top = contentPadding.calculateTopPadding() + 4.dp,
+                ),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            IconButton(onClick = onBack) {
+                Icon(
+                    imageVector = vectorResource(Res.drawable.back_ic),
+                    contentDescription = stringResource(Res.string.back),
+                )
+            }
+            Text(
+                text = stringResource(Res.string.history),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.SemiBold,
             )
+        }
+
+        LazyColumn(
+            contentPadding = PaddingValues(
+                start = contentPadding.calculateStartPadding(LayoutDirection.Ltr) + 16.dp,
+                end = contentPadding.calculateEndPadding(LayoutDirection.Ltr) + 16.dp,
+                top = 8.dp,
+                bottom = contentPadding.calculateBottomPadding()
+            ),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) {
+            items(
+                list,
+                key = { item -> item.timestamp }
+            ) { item ->
+                HistoryItem(
+                    item,
+                    onClick,
+                    onDelete
+                )
+            }
         }
     }
 }

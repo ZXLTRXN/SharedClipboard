@@ -39,6 +39,7 @@ fun EntryProviderScope<NavKey>.clipboardFeature(
     entry<ClipboardRoutes.History>(
     ) {
         HistoryScreenStateful(
+            onBack = navigator::goBack,
             contentPadding = contentPadding,
             modifier = modifier
         )
