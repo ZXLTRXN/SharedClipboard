@@ -136,8 +136,13 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "com.example.sharedclipboard"
+            packageName = "Shared Clipboard"
             packageVersion = "1.0.0"
+            modules("java.sql")
+
+            macOS {
+                bundleID = "com.example.sharedclipboard"
+            }
         }
     }
 }

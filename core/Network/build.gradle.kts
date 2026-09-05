@@ -77,13 +77,13 @@ kotlin {
 
         androidMain {
             dependencies {
-                implementation(libs.ktor.client.darwin)
+                implementation(libs.ktor.client.android)
             }
         }
 
         iosMain {
             dependencies {
-                implementation(libs.ktor.client.android)
+                implementation(libs.ktor.client.darwin)
             }
         }
 

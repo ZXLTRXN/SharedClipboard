@@ -12,6 +12,8 @@ interface FirebaseAuthAdapter {
 }
 
 class FirebaseAuthAdapterImpl(private val auth: FirebaseAuth) : FirebaseAuthAdapter {
-    override val currentUser: FirebaseUser? = auth.currentUser
+    override val currentUser: FirebaseUser?
+        get() = auth.currentUser
+
     override suspend fun signInAnonymously(): AuthResult = auth.signInAnonymously()
 }
