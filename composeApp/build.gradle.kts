@@ -142,6 +142,7 @@ compose.desktop {
 
             macOS {
                 bundleID = "com.example.sharedclipboard"
+                iconFile.set(project.file("src/jvmMain/resources/shared-clipboard.icns"))
             }
         }
     }
