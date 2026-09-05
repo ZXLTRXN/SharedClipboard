@@ -14,12 +14,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.FilledTonalIconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
@@ -38,7 +40,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.draw.clip
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.core.ui.glassSurface
 import com.example.core.ui.composables.LocalSnackbarHostState
 import com.example.core.ui.composables.maxWidthTextsTablets
 import kotlinx.coroutines.launch
@@ -98,33 +102,41 @@ fun HistoryScreen(
                 .fillMaxWidth()
                 .padding(
                     start = contentPadding.calculateStartPadding(LayoutDirection.Ltr) + 4.dp,
-                    end = contentPadding.calculateEndPadding(LayoutDirection.Ltr) + 16.dp,
-                    top = contentPadding.calculateTopPadding() + 4.dp,
+                    end = contentPadding.calculateEndPadding(LayoutDirection.Ltr) + 20.dp,
+                    top = contentPadding.calculateTopPadding() + 12.dp,
                 ),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            IconButton(onClick = onBack) {
+            FilledTonalIconButton(
+                onClick = onBack,
+                colors = IconButtonDefaults.filledTonalIconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                ),
+            ) {
                 Icon(
                     imageVector = vectorResource(Res.drawable.back_ic),
                     contentDescription = stringResource(Res.string.back),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
             Text(
                 text = stringResource(Res.string.history),
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.SemiBold,
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground,
             )
         }
 
         LazyColumn(
             contentPadding = PaddingValues(
-                start = contentPadding.calculateStartPadding(LayoutDirection.Ltr) + 16.dp,
-                end = contentPadding.calculateEndPadding(LayoutDirection.Ltr) + 16.dp,
-                top = 8.dp,
-                bottom = contentPadding.calculateBottomPadding()
+                start = contentPadding.calculateStartPadding(LayoutDirection.Ltr) + 20.dp,
+                end = contentPadding.calculateEndPadding(LayoutDirection.Ltr) + 20.dp,
+                top = 18.dp,
+                bottom = contentPadding.calculateBottomPadding() + 16.dp,
             ),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
@@ -159,14 +171,15 @@ fun HistoryItem(
             if (direction == SwipeToDismissBoxValue.EndToStart) {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                    shape = MaterialTheme.shapes.large,
+                    elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.error)
                 ) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(82.dp)
-                            .padding(16.dp),
+                            .height(92.dp)
+                            .padding(20.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.End
                     ) {
@@ -174,6 +187,7 @@ fun HistoryItem(
                             imageVector = vectorResource(Res.drawable.delete_ic),
                             contentDescription = null,
                             tint = Color.White,
+                            modifier = Modifier.size(24.dp),
                         )
                     }
                 }
@@ -185,7 +199,7 @@ fun HistoryItem(
                 )
             }
         },
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxWidth().clip(MaterialTheme.shapes.large),
         enableDismissFromStartToEnd = false,
         enableDismissFromEndToStart = true,
         onDismiss = {
@@ -195,22 +209,28 @@ fun HistoryItem(
             Card(
                 modifier = Modifier
                     .widthIn(max = maxWidthTextsTablets)
-                    .fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
-                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+                    .fillMaxWidth()
+                    .glassSurface(),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.Transparent,
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                ),
+                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                shape = MaterialTheme.shapes.large,
             ) {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(6.dp),
                     modifier = modifier
-                        .height(82.dp)
+                        .height(92.dp)
                         .clickable(onClick = {
                             onClick(clip)
                         })
-                        .padding(8.dp)
+                        .padding(horizontal = 18.dp, vertical = 14.dp)
 
                 ) {
                     Text(
                         clip.text,
+                        style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
@@ -221,14 +241,17 @@ fun HistoryItem(
                     ) {
                         Text(
                             clip.senderName,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.primary,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.weight(1f)
                         )
                         Text(
                             clip.dateTime,
+                            style = MaterialTheme.typography.bodySmall,
                             maxLines = 1,
-                            color = MaterialTheme.colorScheme.onSurface,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = TextAlign.Right,
 
                             )

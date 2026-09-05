@@ -8,4 +8,9 @@
     <string name="failedOpenURL">Failed to open as URL</string>
     <string name="errorRelogin">Error occurred, please relogin</string>
     <string name="toAuth">Auth</string>
+    <string name="appTitle">Shared Clipboard</string>
+    <string name="appSubtitle">Everything you copy, ready on every device</string>
+    <string name="fromRoom">FROM YOUR ROOM</string>
+    <string name="remoteHint">Hold to copy · Double-tap to open links</string>
+    <string name="composeMessage">SEND TO YOUR DEVICES</string>
 </resources>

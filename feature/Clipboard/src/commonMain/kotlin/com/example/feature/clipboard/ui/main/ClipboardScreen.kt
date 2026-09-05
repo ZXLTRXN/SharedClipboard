@@ -4,12 +4,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
@@ -17,9 +19,10 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -37,6 +40,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -48,6 +52,7 @@ import com.example.core.ui.composables.LocalSnackbarHostState
 import com.example.core.ui.composables.TwoTrailingTextField
 import com.example.core.ui.composables.maxWidthButtonsTablets
 import com.example.core.ui.composables.maxWidthTextsTablets
+import com.example.core.ui.glassSurface
 import com.example.feature.clipboard.ui.main.state.ClipboardIntent
 import com.example.feature.clipboard.ui.main.state.ClipboardSideEffect
 import com.example.feature.clipboard.ui.main.state.ClipboardState
@@ -65,6 +70,11 @@ import sharedclipboard.feature.clipboard.generated.resources.refresh_ic
 import sharedclipboard.feature.clipboard.generated.resources.link_ic
 import sharedclipboard.feature.clipboard.generated.resources.history_ic
 import sharedclipboard.feature.clipboard.generated.resources.toAuth
+import sharedclipboard.feature.clipboard.generated.resources.appTitle
+import sharedclipboard.feature.clipboard.generated.resources.appSubtitle
+import sharedclipboard.feature.clipboard.generated.resources.fromRoom
+import sharedclipboard.feature.clipboard.generated.resources.remoteHint
+import sharedclipboard.feature.clipboard.generated.resources.composeMessage
 
 @Composable
 fun ClipboardScreenStateful(
@@ -151,14 +161,15 @@ fun ClipboardSuccessStateScreen(
 
 
     Column(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
             .clickable(
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() }
             ) {
                 focusManager.clearFocus()
             }
-            .padding(16.dp),
+            .padding(horizontal = 20.dp, vertical = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         var reloadTrigger by remember { mutableStateOf(false) }
@@ -169,11 +180,24 @@ fun ClipboardSuccessStateScreen(
         ) { mutableStateOf(state.localValue) }
 
         Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
         ) {
-            IconButton(onClick = {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = stringResource(Res.string.appTitle),
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground,
+                )
+                Text(
+                    text = stringResource(Res.string.appSubtitle),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            FilledTonalIconButton(onClick = {
                 onIntent(
                     ClipboardIntent.GoToHistory
                 )
@@ -181,7 +205,7 @@ fun ClipboardSuccessStateScreen(
                 Icon(vectorResource(Res.drawable.history_ic), contentDescription = null)
             }
 
-            IconButton(onClick = {
+            FilledTonalIconButton(onClick = {
                 onIntent(
                     ClipboardIntent.GoToShowJoinCode
                 )
@@ -191,8 +215,10 @@ fun ClipboardSuccessStateScreen(
         }
 
 
+        Spacer(modifier = Modifier.height(24.dp))
+
         Column(
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxWidth()
@@ -202,66 +228,101 @@ fun ClipboardSuccessStateScreen(
                 )
         ) {
 
-            when {
-                state.remoteLoading -> {
-                    LoadingIndicator(modifier = Modifier.fillMaxWidth())
-                }
-
-                state.remoteValue.isBlank() -> {
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center,
-                        text = stringResource(Res.string.emptyBuffer),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.error
-                    )
-                }
-
-                else -> {
-                    FlashTextWithDetection(
-                        state.remoteValue,
-                        modifier = Modifier
-                            .widthIn(max = maxWidthTextsTablets)
-                            .fillMaxWidth(),
-                        onLongPress = {
-                            clipboard.setText(AnnotatedString(state.remoteValue))
-                            onIntent(
-                                ClipboardIntent.Copied
-                            )
-                        },
-                        onDoubleTap = {
-                            try {
-                                uriHandler.openUri(state.remoteValue)
-                            } catch (ex: Exception) {
-                                onIntent(
-                                    ClipboardIntent.FailedToOpenUri
-                                )
-                            }
-                        })
-                }
-            }
-
-            Spacer(modifier = Modifier.height(30.dp))
-            TwoTrailingTextField(
-                inputState,
-                onValueChange = { inputState.value = it },
-                labelRes = Res.string.localClipboard,
-                firstIcon = Res.drawable.link_ic,
-                secondIcon = Res.drawable.refresh_ic,
-                onFirstClick = {
-                    val filtered = InputFilters.filterContent(inputState.value)
-                    if (filtered != inputState.value) {
-                        inputState.value = filtered
-                    }
-                },
-                onSecondClick = { reloadTrigger = !reloadTrigger },
-                onSubmit = {
-                    onIntent(ClipboardIntent.SendLocal(inputState.value))
-                },
+            Column(
                 modifier = Modifier
                     .widthIn(max = maxWidthTextsTablets)
                     .fillMaxWidth()
-            )
+                    .glassSurface(strong = true)
+                    .padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(14.dp),
+            ) {
+                Text(
+                    text = stringResource(Res.string.fromRoom),
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+                when {
+                    state.remoteLoading -> {
+                        Box(
+                            modifier = Modifier.fillMaxWidth().height(72.dp),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            LoadingIndicator(modifier = Modifier.size(48.dp))
+                        }
+                    }
+
+                    state.remoteValue.isBlank() -> {
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center,
+                            text = stringResource(Res.string.emptyBuffer),
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+
+                    else -> {
+                        FlashTextWithDetection(
+                            state.remoteValue,
+                            modifier = Modifier.fillMaxWidth(),
+                            onLongPress = {
+                                clipboard.setText(AnnotatedString(state.remoteValue))
+                                onIntent(
+                                    ClipboardIntent.Copied
+                                )
+                            },
+                            onDoubleTap = {
+                                try {
+                                    uriHandler.openUri(state.remoteValue)
+                                } catch (ex: Exception) {
+                                    onIntent(
+                                        ClipboardIntent.FailedToOpenUri
+                                    )
+                                }
+                            })
+                    }
+                }
+                Text(
+                    text = stringResource(Res.string.remoteHint),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+
+            Column(
+                modifier = Modifier
+                    .widthIn(max = maxWidthTextsTablets)
+                    .fillMaxWidth()
+                    .glassSurface()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Text(
+                    text = stringResource(Res.string.composeMessage),
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.secondary,
+                )
+                TwoTrailingTextField(
+                    inputState,
+                    onValueChange = { inputState.value = it },
+                    labelRes = Res.string.localClipboard,
+                    firstIcon = Res.drawable.link_ic,
+                    secondIcon = Res.drawable.refresh_ic,
+                    onFirstClick = {
+                        val filtered = InputFilters.filterContent(inputState.value)
+                        if (filtered != inputState.value) {
+                            inputState.value = filtered
+                        }
+                    },
+                    onSecondClick = { reloadTrigger = !reloadTrigger },
+                    onSubmit = {
+                        onIntent(ClipboardIntent.SendLocal(inputState.value))
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
         }
 
         Button(
@@ -269,6 +330,7 @@ fun ClipboardSuccessStateScreen(
                 .widthIn(max = maxWidthButtonsTablets)
                 .fillMaxWidth()
                 .windowInsetsPadding(WindowInsets.ime),
+            contentPadding = ButtonDefaults.ContentPadding,
             onClick = {
                 onIntent(
                     ClipboardIntent.SendLocal(inputState.value)

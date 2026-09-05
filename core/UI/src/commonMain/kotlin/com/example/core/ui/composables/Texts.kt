@@ -40,6 +40,7 @@ fun FlashTextWithDetection(
 
     Text(
         text = text,
+        color = MaterialTheme.colorScheme.onSurface,
         maxLines = 6,
         textAlign = TextAlign.Center,
         overflow = TextOverflow.Ellipsis,

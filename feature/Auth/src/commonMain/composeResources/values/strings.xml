@@ -12,4 +12,11 @@
     <string name="codePlaceholder">123456</string>
     <string name="roomCode">Join room</string>
     <string name="copyCode">Use this code to connect another device</string>
+    <string name="welcomeTitle">Your clipboard, everywhere</string>
+    <string name="welcomeSubtitle">Create one private room for your devices, or connect to a room you already use.</string>
+    <string name="createRoomHint">Start a new private space</string>
+    <string name="joinRoomHint">Use a code from another device</string>
+    <string name="joinTitle">Connect this device</string>
+    <string name="joinSubtitle">Enter the room code shown on a device that is already connected.</string>
+    <string name="roomCodeLabel">ROOM CODE</string>
 </resources>

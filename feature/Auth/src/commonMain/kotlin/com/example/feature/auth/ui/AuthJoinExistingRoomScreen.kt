@@ -3,6 +3,8 @@ package com.example.feature.auth.ui
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
@@ -25,10 +27,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.core.ui.composables.ErrorScreen
 import com.example.core.ui.composables.maxWidthButtonsTablets
+import com.example.core.ui.glassSurface
 import kotlinx.coroutines.flow.receiveAsFlow
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -38,6 +42,8 @@ import sharedclipboard.feature.auth.generated.resources.connect
 import sharedclipboard.feature.auth.generated.resources.enterCode
 import sharedclipboard.feature.auth.generated.resources.errorRelogin
 import sharedclipboard.feature.auth.generated.resources.toAuth
+import sharedclipboard.feature.auth.generated.resources.joinTitle
+import sharedclipboard.feature.auth.generated.resources.joinSubtitle
 
 @Composable
 fun AuthJoinExistingRoomScreenStateful(
@@ -108,29 +114,48 @@ fun AuthJoinExistingRoomDefaultScreen(
                 interactionSource = remember { MutableInteractionSource() }
             ) {
                 focusManager.clearFocus()
-            }.padding(16.dp),
+            }.padding(horizontal = 20.dp, vertical = 24.dp),
     ) {
-        TextField(
-            state = textFieldState,
-            label = {
-                Text(stringResource(Res.string.enterCode))
-            },
-            placeholder = {
-                Text(stringResource(Res.string.codePlaceholder))
-            },
-            modifier = Modifier.align(Alignment.Center)
+        Column(
+            modifier = Modifier
+                .align(Alignment.Center)
                 .widthIn(max = maxWidthButtonsTablets)
-                .fillMaxWidth(),
-            shape = MaterialTheme.shapes.medium,
-            colors = TextFieldDefaults.colors(
-                unfocusedContainerColor = Color.Transparent,
-                focusedContainerColor = Color.Transparent,
-            ),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Done
+                .fillMaxWidth()
+                .glassSurface(strong = true)
+                .padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Text(
+                stringResource(Res.string.joinTitle),
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface,
             )
-        )
+            Text(
+                stringResource(Res.string.joinSubtitle),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            TextField(
+                state = textFieldState,
+                label = {
+                    Text(stringResource(Res.string.enterCode))
+                },
+                placeholder = {
+                    Text(stringResource(Res.string.codePlaceholder))
+                },
+                modifier = Modifier.fillMaxWidth(),
+                shape = MaterialTheme.shapes.medium,
+                colors = TextFieldDefaults.colors(
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.62f),
+                    focusedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.82f),
+                ),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Done
+                )
+            )
+        }
         Button(
             onClick = {
                 onAccept(textFieldState.text.toString())
