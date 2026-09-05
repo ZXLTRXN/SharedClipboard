@@ -13,6 +13,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.isShiftPressed
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onPreviewKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -30,6 +36,7 @@ fun TwoTrailingTextField(
     secondIcon: DrawableResource,
     onFirstClick: () -> Unit,
     onSecondClick: () -> Unit,
+    onSubmit: () -> Unit,
     modifier: Modifier = Modifier,
     keyboardOptions: KeyboardOptions = KeyboardOptions(
         keyboardType = KeyboardType.Text,
@@ -41,7 +48,18 @@ fun TwoTrailingTextField(
     TextField(
         inputState.value,
         onValueChange = onValueChange,
-        modifier = modifier,
+        modifier = modifier.onPreviewKeyEvent { event ->
+            if (
+                event.key == Key.Enter &&
+                event.type == KeyEventType.KeyDown &&
+                !event.isShiftPressed
+            ) {
+                onSubmit()
+                true
+            } else {
+                false
+            }
+        },
         maxLines = 3,
         label = {
             Text(stringResource(labelRes))
@@ -73,7 +91,10 @@ fun TwoTrailingTextField(
             focusedContainerColor = Color.Transparent,
         ),
         keyboardActions = KeyboardActions(
-            onDone = { focusManager.clearFocus() } // гарантированно закроет
+            onDone = {
+                onSubmit()
+                focusManager.clearFocus()
+            }
         ),
         keyboardOptions = keyboardOptions
     )

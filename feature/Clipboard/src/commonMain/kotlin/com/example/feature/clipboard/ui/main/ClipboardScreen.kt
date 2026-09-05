@@ -255,6 +255,9 @@ fun ClipboardSuccessStateScreen(
                     }
                 },
                 onSecondClick = { reloadTrigger = !reloadTrigger },
+                onSubmit = {
+                    onIntent(ClipboardIntent.SendLocal(inputState.value))
+                },
                 modifier = Modifier
                     .widthIn(max = maxWidthTextsTablets)
                     .fillMaxWidth()
