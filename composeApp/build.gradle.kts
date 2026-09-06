@@ -141,11 +141,16 @@ compose.desktop {
             "-Xms32m",
             "-Xmx384m",
             "-Xss1m",
+            "-XX:TieredStopAtLevel=1",
             "-XX:+UseSerialGC",
             "-XX:MinHeapFreeRatio=10",
             "-XX:MaxHeapFreeRatio=20",
             "-XX:ReservedCodeCacheSize=64m"
         )
+
+        buildTypes.release.proguard {
+            isEnabled.set(false)
+        }
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
