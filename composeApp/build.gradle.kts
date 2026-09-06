@@ -134,6 +134,19 @@ compose.desktop {
     application {
         mainClass = "com.example.sharedclipboard.MainKt"
 
+        // The default JVM ergonomics on developer machines reserve a multi-gigabyte
+        // heap and start with a comparatively large committed heap. This is a small,
+        // mostly idle desktop utility, so prefer a low-footprint configuration.
+        jvmArgs(
+            "-Xms32m",
+            "-Xmx384m",
+            "-Xss1m",
+            "-XX:+UseSerialGC",
+            "-XX:MinHeapFreeRatio=10",
+            "-XX:MaxHeapFreeRatio=20",
+            "-XX:ReservedCodeCacheSize=64m"
+        )
+
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "Shared Clipboard"
